@@ -1,0 +1,5 @@
+# Chuẩn hóa dấu xuống dòng trên Windows/macOS/Linux
+* text=auto
+*.html text eol=lf
+*.md text eol=lf
+*.png binary

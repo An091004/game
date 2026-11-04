@@ -1,0 +1,27 @@
+# Tệp hệ điều hành / IDE
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/*.log
+
+# Tệp tạm khi phát triển
+*.log
+*.tmp
+*.swp
+*.swo
+node_modules/
+dist/
+coverage/
+.cache/
+*.zip
+
+# Bản sao tiến độ riêng tư (không đưa lên Git)
+backups/
+saves/
+*-save.txt
+
+# Tệp cấu hình có thể chứa thông tin riêng tư
+.env
+.env.*
+!.env.example
