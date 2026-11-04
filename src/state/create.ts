@@ -4,6 +4,8 @@ import { plotCapacity } from "../engine/math";
 export function newState(): GameState {
   return {
     version: 1,
+    saveVersion: 2,
+    lastSeenAt: Date.now(),
     createdAt: Date.now(),
     lastSeen: Date.now(),
     stage: 0,

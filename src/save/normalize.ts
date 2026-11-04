@@ -17,6 +17,7 @@ export function normalize(input: unknown): GameState {
   const s = newState();
   s.createdAt = num(raw.createdAt, Date.now()) || Date.now();
   s.lastSeen = num(raw.lastSeen, Date.now()) || Date.now();
+  s.lastSeenAt = num(raw.lastSeenAt, s.lastSeen);
   s.stage = Math.floor(clamp(num(raw.stage), 0, STAGES.length - 1));
   s.qi = clamp(num(raw.qi), 0, 1e15);
   s.stones = Math.floor(clamp(num(raw.stones), 0, 1e12));
