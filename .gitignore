@@ -16,6 +16,16 @@ coverage/
 .cache/
 *.zip
 
+# Công cụ tạm, bản build Android và dữ liệu ký (sinh trong CI)
+.task/
+android/
+*.apk
+*.aab
+*.jks
+*.keystore
+*.jar
+*.tsbuildinfo
+
 # Bản sao tiến độ riêng tư (không đưa lên Git)
 backups/
 saves/
