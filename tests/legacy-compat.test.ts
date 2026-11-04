@@ -7,7 +7,6 @@ import type { GameState } from "../src/state/types";
 import { createProgression } from "../src/engine/progression";
 import { calculateQiGain, plotCapacity } from "../src/engine/math";
 import { normalize } from "../src/save/normalize";
-import { LegacyStorage, type StoragePort } from "../src/save/storage";
 
 const source = readFileSync(
   new URL("../legacy/index.html", import.meta.url),
@@ -74,7 +73,7 @@ describe("Tương thích bản HTML v1", () => {
         "currentCost",
         "cavePrice",
       ] as const)
-        if(old[key]()===null)expect(next[key]()).toBeNull();
+        if (old[key]() === null) expect(next[key]()).toBeNull();
         else expect(next[key]()).toBeCloseTo(old[key]()!, 10);
       for (const m of CONFIG.manuals)
         expect(next.manualPrice(m)).toBe(old.manualPrice(m));
@@ -103,63 +102,4 @@ describe("Tích lũy theo delta time", () => {
       calculateQiGain(10, 0, 2, 100000, 28800) +
         calculateQiGain(10, 0, 3, 103000, 28800),
     ).toBe(calculateQiGain(10, 0, 5, 103000, 28800)));
-});
-describe("Chốt bảo vệ save trước giai đoạn 2", () => {
-  const memory = (raw: string | null) => {
-    let value = raw;
-    let writes = 0;
-    const port: StoragePort = {
-      getItem: () => value,
-      setItem: (_, v) => {
-        value = v;
-        writes++;
-      },
-    };
-    return { port, value: () => value, writes: () => writes };
-  };
-  it("save mới chỉ được ghi khi chưa có bản lưu", () => {
-    const m = memory(null),
-      store = new LegacyStorage(() => m.port, "save");
-    expect(store.load(normalize)).toBeNull();
-    expect(store.write(newState())).toBe(true);
-    expect(m.writes()).toBe(1);
-  });
-  it.each(["{bad", '{"version":999}'])(
-    "save hỏng %s không bị ghi đè",
-    (raw) => {
-      const m = memory(raw),
-        store = new LegacyStorage(() => m.port, "save");
-      expect(store.load(normalize)).toBeNull();
-      expect(store.blocked).toBe(true);
-      expect(store.write(newState())).toBe(false);
-      expect(m.value()).toBe(raw);
-      expect(m.writes()).toBe(0);
-    },
-  );
-  it("lỗi quyền đọc vẫn khóa mọi lần ghi tiếp theo", () => {
-    let writes = 0;
-    const store = new LegacyStorage(
-      () => ({
-        getItem() {
-          throw Error("denied");
-        },
-        setItem() {
-          writes++;
-        },
-      }),
-      "save",
-    );
-    store.load(normalize);
-    store.write(newState());
-    store.write(newState());
-    expect(writes).toBe(0);
-  });
-  it("đọc save hợp lệ rồi tự lưu bình thường", () => {
-    const m = memory(JSON.stringify(newState())),
-      store = new LegacyStorage(() => m.port, "save");
-    const loaded = store.load(normalize)!;
-    loaded.qi = 55;
-    expect(store.write(loaded)).toBe(true);
-    expect(JSON.parse(m.value()!).qi).toBe(55);
-  });
 });

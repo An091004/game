@@ -15,6 +15,8 @@ export interface Travel {
 }
 export interface GameState {
   version: 1;
+  saveVersion: 2;
+  lastSeenAt: number;
   createdAt: number;
   lastSeen: number;
   stage: number;

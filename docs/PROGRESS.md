@@ -4,15 +4,15 @@
 
 - Repo: An091004/game; nhánh chính main.
 - Bản nguồn: index.html tại commit 473f97f; giữ bản nguyên gốc ở legacy/index.html sau khi build Vite đầu tiên thành công.
-- Lần chạy này thực hiện giai đoạn 1 vì main chưa có nền Vite/TypeScript. Không thực hiện trước các giai đoạn 2–8.
-- Mọi thay đổi nằm trên codex/giai-doan-1-vite-typescript, đưa vào PR; chủ repo tự merge.
+- Lần chạy đầu hoàn tất giai đoạn 1; lần hiện tại thực hiện giai đoạn 2 theo xác nhận của người dùng.
+- Giai đoạn 2 ở codex/giai-doan-2-save-manager, ban đầu nối tiếp PR #1. Ngày 04/11/2026 người dùng cho phép agent merge riêng cả PR giai đoạn 1 và 2 sau khi hoàn tất kiểm chứng; không áp dụng quyền này cho giai đoạn sau. Trạng thái merge thực tế xem trên GitHub.
 
 ## Trạng thái
 
 | Giai đoạn | Trạng thái |
 | --- | --- |
-| 1. Vite + TypeScript + CI + tài liệu | Đã triển khai và kiểm chứng cục bộ; chờ chủ repo duyệt PR và merge |
-| 2. SaveManager + ngoại tuyến + tests | Chưa bắt đầu; cần giai đoạn 1 được xác nhận |
+| 1. Vite + TypeScript + CI + tài liệu | Hoàn tất triển khai và kiểm chứng cục bộ (PR #1) |
+| 2. SaveManager + ngoại tuyến + tests | Hoàn tất triển khai và kiểm chứng cục bộ; người dùng yêu cầu merge |
 | 3. Capacitor + APK debug | Chưa bắt đầu |
 | 4. Giao diện Android | Chưa bắt đầu |
 | 5. Nhân vật SVG | Chưa bắt đầu |
@@ -31,13 +31,25 @@
 - Xóa hai PNG xem trước đã được dự án tạo khỏi cây file nhánh này để đáp ứng chỉ commit văn bản; không viết lại lịch sử Git. Bản HTML cũ vẫn được giữ làm fixture đối chiếu.
 - Kết quả: npm ci đạt; npx tsc --noEmit đạt; npx vitest run 30/30; npm run build đạt. Xem TESTING.md cho kiểm tra trình duyệt và giới hạn.
 
-## Việc chủ repo cần làm tiếp
+## Giai đoạn 2
 
-1. Mở PR, xem diff và kết quả CI thực tế trên GitHub.
-2. Chạy npm ci và npm run dev nếu muốn thử; xuất save từ bản cũ trước khi đổi địa chỉ chơi.
-3. Tự merge khi đã đồng ý, rồi yêu cầu giai đoạn 2. Nếu CI lỗi, gửi log; nếu có khác biệt giao diện, gửi ảnh.
-4. Chưa cần Secrets hoặc thay đổi cài đặt repo. APK cài thử chỉ có từ giai đoạn 3.
+- SaveManager dùng Preferences trên native, localStorage trên web; bổ sung core 8.6.0, preferences 8.0.1, app 8.1.2 theo bản stable npm. API theo [Preferences](https://capacitorjs.com/docs/apis/preferences) và [App](https://capacitorjs.com/docs/apis/app).
+- Hai ô chính/backup có checksum CRC32; backup giữ bản hợp lệ trước; đọc lại xác nhận; hàng đợi ghi tránh đảo thứ tự. Không coi lỗi đọc là save mới và không fallback từ Preferences lỗi sang localStorage.
+- Mảng migrations chuyển v1 sang saveVersion 2 với lastSeenAt, giữ khóa v1. Xác minh đủ dữ liệu trước chuẩn hóa, giới hạn journal/travel theo schema v1 (không quá 500). Save phiên bản tương lai khóa ghi.
+- Gom thay đổi 5 giây có hạn chờ; flush trên nền/visibilitychange/pagehide. Web ghi đồng bộ; native dùng Promise và xử lý lỗi. Nếu phát hiện ô chính bị phiên khác sửa, dừng ghi.
+- Dùng một công thức elapsed cho khởi động và resume, cap 8 giờ, giữ mốc khi đồng hồ lùi. Gộp trạng thái native/document/page tránh tính hai lần. Hộp thoại bế quan hiện khi vắng ít nhất 4 giây.
+- Base64 mới chứa envelope; vẫn nhập v1, có xác nhận thay thế. Chưa thêm Filesystem/Share (giai đoạn 6).
+- Xóa LegacyStorage của giai đoạn 1 vì đã thay bằng SaveManager; các test bảo vệ được thay bằng test sâu hơn. Giữ nguyên legacy/index.html làm fixture hồi quy.
+- Kiểm chứng: npm ci, tsc, 71/71 Vitest, build đều đạt; 8 nhóm kiểm tra Edge đạt. Xem TESTING.md.
+- Chưa sinh android/, chưa build Gradle. Auto Backup/backup rules sẽ thực hiện trong patch-android.mjs ở giai đoạn 3. Không tự nhận đã kiểm chứng trên điện thoại thật.
 
-## Giới hạn cần giữ ở giai đoạn sau
+## Việc tiếp theo
 
-Save lỗi được bảo vệ nhưng chưa tự phục hồi; khóa ghi tồn tại hết phiên. File gốc dùng file:// và dev server dùng origin khác nhau nên cần xuất/nhập nếu đổi nơi chơi. Tab vẫn theo bố cục v1; thay bottom navigation và thử thiết bị thật ở giai đoạn 4. src/ui/game.ts còn điều phối thao tác cũ; tiếp tục tách module khi triển khai tính năng tương ứng.
+1. Kiểm tra trạng thái merge hai PR trên GitHub; agent thực hiện theo yêu cầu rõ ràng trong chat.
+2. Xử lý khóa tài khoản GitHub do billing issue rồi chạy lại CI; annotation hiện tại cho biết job chưa khởi chạy. Không cần dán token vào chat.
+3. Khi muốn làm tiếp, yêu cầu giai đoạn 3 (Capacitor + APK debug). Chưa cần secrets ký release.
+4. Giữ bản xuất Base64 trước khi đổi nơi chơi hoặc kiểm tra khôi phục.
+
+## Giới hạn
+
+Hai ô cùng hỏng sẽ dừng khởi tạo, chưa có màn nhập file phục hồi riêng. Callback lưu native không bảo đảm hoàn tất nếu hệ điều hành cưỡng bức dừng ngay lập tức. Kiểm tra adapter giả lập không thay thế thử force-stop/cài đè/Auto Backup trên Android. Native/web khác origin không tự chia sẻ save. CRC32 không phải chữ ký chống sửa dữ liệu. Thanh điều hướng và nhân vật vẫn chờ đúng giai đoạn tương ứng.
