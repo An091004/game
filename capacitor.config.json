@@ -1,0 +1,23 @@
+{
+  "appId": "com.nhanvan.game",
+  "appName": "Nhàn Vân",
+  "webDir": "dist",
+  "backgroundColor": "#08191a",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#08191a"
+  },
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "native",
+      "style": "DARK"
+    },
+    "SplashScreen": {
+      "launchShowDuration": 700,
+      "launchAutoHide": true,
+      "launchFadeOutDuration": 200,
+      "backgroundColor": "#08191a",
+      "showSpinner": false
+    }
+  }
+}

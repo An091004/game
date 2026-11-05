@@ -1,0 +1,42 @@
+// Chỉ đọc biến môi trường lúc Gradle chạy; không ghi giá trị bí mật vào nguồn.
+def keyPath = System.getenv('ANDROID_KEYSTORE_PATH')
+def storePasswordValue = System.getenv('ANDROID_KEYSTORE_PASSWORD')
+def keyAliasValue = System.getenv('ANDROID_KEY_ALIAS')
+def aliasPassword = System.getenv('ANDROID_KEY_PASSWORD')
+def hasReleaseSigning = [keyPath, storePasswordValue, keyAliasValue, aliasPassword].every { it }
+def debugKeyPath = System.getenv('ANDROID_DEBUG_KEYSTORE')
+
+android {
+    signingConfigs {
+        if (debugKeyPath) {
+            debug {
+                storeFile rootProject.file(debugKeyPath)
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
+        }
+        if (hasReleaseSigning) {
+            release {
+                storeFile rootProject.file(keyPath)
+                storePassword storePasswordValue
+                keyAlias keyAliasValue
+                keyPassword aliasPassword
+            }
+        }
+    }
+    buildTypes {
+        release {
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
+// Không cho sinh APK release không ký. Workflow release thuộc giai đoạn 7.
+gradle.taskGraph.whenReady { graph ->
+    if (!hasReleaseSigning && graph.allTasks.any { it.project == project && it.name.toLowerCase().contains('release') }) {
+        throw new GradleException('Thiếu cấu hình ký release: cần ANDROID_KEYSTORE_PATH, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS và ANDROID_KEY_PASSWORD. Xem hướng dẫn giai đoạn 7; không dùng khóa debug để phát hành.')
+    }
+}

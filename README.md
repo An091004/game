@@ -60,7 +60,11 @@ Nếu gặp cảnh báo không ghi được, hãy xuất giữ tiến độ đan
 
 ## Android
 
-Giai đoạn 2 đã có plugin core/preferences/app cho lưu và vòng đời, nhưng chưa sinh dự án Android hoặc APK. APK debug đầu tiên dự kiến ở giai đoạn 3 và chỉ build bằng GitHub Actions. Xem [tiến độ](docs/PROGRESS.md) trước khi làm tiếp. Chủ repo duyệt và merge từng PR; agent không merge main.
+Giai đoạn 3 bổ sung cấu hình Capacitor cho **Nhàn Vân** (`com.nhanvan.game`) và workflow **APK debug Nhàn Vân**. Actions sinh Android, icon/splash từ SVG, cấu hình Auto Backup cho Preferences và build APK debug. Artifact `NhanVan-debug.apk` giữ 14 ngày, chỉ xuất hiện khi job build thành công.
+
+Xem [hướng dẫn tải và cài APK debug](docs/ANDROID-DEBUG.md), bao gồm lỗi billing, giới hạn khóa debug/cache và các bước thử save trên điện thoại. Không cần Secrets ở giai đoạn này. Script ký release đã có chỗ đọc biến môi trường, nhưng workflow phát hành và khóa release để giai đoạn 7.
+
+Chủ repo duyệt và merge PR giai đoạn 3. Yêu cầu merge trong chat trước đây đã được thực hiện riêng cho PR giai đoạn 1 và 2; không áp dụng cho PR mới. Trạng thái thực tế xem [tiến độ](docs/PROGRESS.md).
 
 ## Kiểm thử và giấy phép
 

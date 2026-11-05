@@ -4,16 +4,16 @@
 
 - Repo: An091004/game; nhánh chính main.
 - Bản nguồn: index.html tại commit 473f97f; giữ bản nguyên gốc ở legacy/index.html sau khi build Vite đầu tiên thành công.
-- Lần chạy đầu hoàn tất giai đoạn 1; lần hiện tại thực hiện giai đoạn 2 theo xác nhận của người dùng.
+- Giai đoạn 1 và 2 đã merge vào main qua PR #1/#2, main tại 4d1c90b khi bắt đầu giai đoạn 3 ngày 05/11/2026.
 - Giai đoạn 2 ở codex/giai-doan-2-save-manager, ban đầu nối tiếp PR #1. Ngày 04/11/2026 người dùng cho phép agent merge riêng cả PR giai đoạn 1 và 2 sau khi hoàn tất kiểm chứng; không áp dụng quyền này cho giai đoạn sau. Trạng thái merge thực tế xem trên GitHub.
 
 ## Trạng thái
 
 | Giai đoạn | Trạng thái |
 | --- | --- |
-| 1. Vite + TypeScript + CI + tài liệu | Hoàn tất triển khai và kiểm chứng cục bộ (PR #1) |
-| 2. SaveManager + ngoại tuyến + tests | Hoàn tất triển khai và kiểm chứng cục bộ; người dùng yêu cầu merge |
-| 3. Capacitor + APK debug | Chưa bắt đầu |
+| 1. Vite + TypeScript + CI + tài liệu | Đã merge PR #1 |
+| 2. SaveManager + ngoại tuyến + tests | Đã merge PR #2 |
+| 3. Capacitor + APK debug | PR #3 đã triển khai và kiểm chứng cục bộ; Actions bị khóa billing, chưa có APK |
 | 4. Giao diện Android | Chưa bắt đầu |
 | 5. Nhân vật SVG | Chưa bắt đầu |
 | 6. Notifications/haptics/save file | Chưa bắt đầu |
@@ -45,10 +45,23 @@
 
 ## Việc tiếp theo
 
-1. Kiểm tra trạng thái merge hai PR trên GitHub; agent thực hiện theo yêu cầu rõ ràng trong chat.
-2. Xử lý khóa tài khoản GitHub do billing issue rồi chạy lại CI; annotation hiện tại cho biết job chưa khởi chạy. Không cần dán token vào chat.
-3. Khi muốn làm tiếp, yêu cầu giai đoạn 3 (Capacitor + APK debug). Chưa cần secrets ký release.
-4. Giữ bản xuất Base64 trước khi đổi nơi chơi hoặc kiểm tra khôi phục.
+1. Chủ repo duyệt PR giai đoạn 3; quyền merge trước đó chỉ dành cho giai đoạn 1 và 2.
+2. Xử lý khóa tài khoản GitHub do billing issue, chạy lại CI và workflow APK debug. Khi bắt đầu giai đoạn này, lần chạy gần nhất trên main vẫn không có bước thực thi vì billing.
+3. Tải artifact NhanVan-debug.apk khi build thành công và làm theo docs/ANDROID-DEBUG.md; chưa cần Secrets ký release.
+4. Giữ bản xuất Base64 trước khi cài đè/đổi nơi chơi. Khóa debug cache theo nhánh không thay thế khóa release bền vững.
+5. Gửi ảnh/log thử APK trước khi sang giai đoạn 4.
+
+## Giai đoạn 3
+
+- Nhánh codex/giai-doan-3-capacitor-debug. Capacitor config JSON: com.nhanvan.game, tên Nhàn Vân, webDir dist, không remote server. JSON được CLI đọc trực tiếp; game vẫn TypeScript.
+- Bổ sung CLI/android 8.6.0, assets 4.0.0, splash-screen 8.0.2 từ npm stable ngày 05/11/2026. JDK 21, Node 24; Gradle/AGP/SDK theo template khóa trong lockfile.
+- patch-android.mjs đặt versionName/versionCode, portrait, Auto Backup chỉ Preferences (Android trước/sau 12), quyền POST_NOTIFICATIONS trong manifest, status/splash và script ký đọc env. Kiểm mẫu trước ghi, chạy lại an toàn; không sửa logic game.
+- Icon 雲 là SVG path tự vẽ. Công cụ assets sinh PNG trên runner; wrapper xác nhận đầu ra thay vì bỏ qua lỗi CLI exit 0. Không đưa PNG/JAR/android/ vào Git.
+- Workflow android-debug.yml chạy khi push nhánh và chạy tay khi workflow đã hiện trên main; build web, sinh Android, vá, tạo asset, sync, assembleDebug, kiểm chữ ký, upload APK + SHA-256 giữ 14 ngày. Cache npm/Gradle và khóa debug; không thêm Secrets hay cấu hình phát hành.
+- Thêm 15 test vá template Android thực, tổng 86/86 test đạt; npm ci, tsc, build web và actionlint đạt. Render xem trước icon SVG đạt. Không chạy cap add, Gradle hoặc SDK trong sandbox.
+- npm audit báo 4 moderate trong chuỗi dev assets → trapezedev → xcode → uuid; npm audit --omit=dev báo 0. Không dùng audit fix --force để hạ assets về bản cũ. Cần theo dõi upstream, không coi audit toàn bộ là sạch.
+- Tài liệu cài thử ở docs/ANDROID-DEBUG.md. Bản APK đầu tiên và kiểm thử Android thật còn phụ thuộc Actions chạy thành công; không đánh dấu giai đoạn 3 hoàn tất nghiệm thu chỉ dựa vào test cục bộ.
+- [PR #3](https://github.com/An091004/game/pull/3) đang mở để chủ repo duyệt. [Lần build APK đầu tiên](https://github.com/An091004/game/actions/runs/41955524774) ngày 05/11/2026 kết thúc failure nhưng job có 0 bước: GitHub báo tài khoản bị khóa vì billing. Chưa chạy Gradle, chưa có artifact. CI web cùng commit cũng bị chặn tương tự.
 
 ## Giới hạn
 
