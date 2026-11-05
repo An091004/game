@@ -13,7 +13,7 @@
 | --- | --- |
 | 1. Vite + TypeScript + CI + tài liệu | Đã merge PR #1 |
 | 2. SaveManager + ngoại tuyến + tests | Đã merge PR #2 |
-| 3. Capacitor + APK debug | Đã triển khai và kiểm chứng cục bộ; chờ Actions build APK và thử trên điện thoại |
+| 3. Capacitor + APK debug | PR #3 đã triển khai và kiểm chứng cục bộ; Actions bị khóa billing, chưa có APK |
 | 4. Giao diện Android | Chưa bắt đầu |
 | 5. Nhân vật SVG | Chưa bắt đầu |
 | 6. Notifications/haptics/save file | Chưa bắt đầu |
@@ -61,6 +61,7 @@
 - Thêm 15 test vá template Android thực, tổng 86/86 test đạt; npm ci, tsc, build web và actionlint đạt. Render xem trước icon SVG đạt. Không chạy cap add, Gradle hoặc SDK trong sandbox.
 - npm audit báo 4 moderate trong chuỗi dev assets → trapezedev → xcode → uuid; npm audit --omit=dev báo 0. Không dùng audit fix --force để hạ assets về bản cũ. Cần theo dõi upstream, không coi audit toàn bộ là sạch.
 - Tài liệu cài thử ở docs/ANDROID-DEBUG.md. Bản APK đầu tiên và kiểm thử Android thật còn phụ thuộc Actions chạy thành công; không đánh dấu giai đoạn 3 hoàn tất nghiệm thu chỉ dựa vào test cục bộ.
+- [PR #3](https://github.com/An091004/game/pull/3) đang mở để chủ repo duyệt. [Lần build APK đầu tiên](https://github.com/An091004/game/actions/runs/41955524774) ngày 05/11/2026 kết thúc failure nhưng job có 0 bước: GitHub báo tài khoản bị khóa vì billing. Chưa chạy Gradle, chưa có artifact. CI web cùng commit cũng bị chặn tương tự.
 
 ## Giới hạn
 

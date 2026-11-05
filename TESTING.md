@@ -19,6 +19,8 @@ CLI Capacitor đọc config thành công: com.nhanvan.game, Nhàn Vân, dist. SV
 
 Chưa xác minh Gradle compile, tài nguyên Android sau sinh, chữ ký APK, cài đè, force-stop hoặc Auto Backup trên thiết bị. Chỉ Actions được build APK; lần CI mới nhất trên main lúc bắt đầu giai đoạn 3 bị khóa billing và chưa chạy bước nào. Kết quả mới của nhánh/PR xem trên GitHub; không xem check bị khóa là kiểm thử mã nguồn đã chạy.
 
+Sau khi đẩy PR #3, đã kiểm tra [run APK 41955524774](https://github.com/An091004/game/actions/runs/41955524774) tại commit 4cf55a0: job `apk` failure, danh sách bước rỗng, annotation **The job was not started because your account is locked due to a billing issue.** Không có APK. Hai run web cùng commit cũng dừng trước bước đầu vì cùng nguyên nhân. Cần xử lý tài khoản rồi chạy lại; không có log Gradle để kết luận build Android thành công/thất bại về mã nguồn.
+
 ## Kết quả giai đoạn 2 đã ghi nhận
 
 Ngày 04/11/2026; Windows, Node 24.22.1, npm 12.2.1. CLI npm chạy từ thư mục tạm trong repo.
