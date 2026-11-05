@@ -1,4 +1,25 @@
-# Kiểm chứng giai đoạn 2
+# Kiểm chứng giai đoạn 3
+
+Ngày 05/11/2026; Windows, Node 24.22.1, npm 12.2.1. Không dùng Android SDK/Gradle trong sandbox.
+
+| Lệnh | Kết quả thực tế |
+| --- | --- |
+| npm ci | Đạt; cài 192 packages, audit 193; 4 moderate trong dev dependency |
+| npx tsc --noEmit | Đạt |
+| npx vitest run | Đạt 86/86 test trong 4 file |
+| npm run build | Đạt; 50 modules |
+| actionlint v1.7.12 | Đạt ci.yml và android-debug.yml; không chạy ShellCheck/Pyflakes |
+| npm audit --omit=dev | 0 vulnerabilities |
+
+15 test mới đọc đúng các file văn bản từ android-template.tar.gz của CLI 8.6.0, mô phỏng bước đặt package, rồi chạy script vá: ID/tên/version/portrait, backup rules tương thích Preferences, splash/status bar, tính lặp an toàn, tăng version, giữ activity phụ, chặn template thiếu mẫu trước khi ghi, không ghi giá trị ký và kiểm tra đầu vào version. Fixture ở .task/ trong repo, tự dọn sau test; không sinh dự án Android thật, không chạy cap add hoặc Gradle.
+
+CLI Capacitor đọc config thành công: com.nhanvan.game, Nhàn Vân, dist. SVG được render bằng pipeline ảnh của assets ở 512×512 và kiểm tra bằng mắt, không phụ thuộc font hệ thống. Đây không phải ảnh chụp app Android.
+
+`npm audit` toàn bộ còn 4 moderate, chung nguồn uuid qua công cụ dev @capacitor/assets → @trapezedev/project → xcode. Bản stable assets hiện tại vẫn có dependency này; đề xuất tự động của npm là hạ assets xuống 1.0.0, nên không áp dụng `--force`. Không có cảnh báo trong cây production theo `npm audit --omit=dev`.
+
+Chưa xác minh Gradle compile, tài nguyên Android sau sinh, chữ ký APK, cài đè, force-stop hoặc Auto Backup trên thiết bị. Chỉ Actions được build APK; lần CI mới nhất trên main lúc bắt đầu giai đoạn 3 bị khóa billing và chưa chạy bước nào. Kết quả mới của nhánh/PR xem trên GitHub; không xem check bị khóa là kiểm thử mã nguồn đã chạy.
+
+## Kết quả giai đoạn 2 đã ghi nhận
 
 Ngày 04/11/2026; Windows, Node 24.22.1, npm 12.2.1. CLI npm chạy từ thư mục tạm trong repo.
 

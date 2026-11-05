@@ -1,0 +1,101 @@
+name: APK debug Nhàn Vân
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-debug-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      ANDROID_VERSION_CODE: ${{ github.run_number }}
+      ANDROID_DEBUG_KEYSTORE: ${{ github.workspace }}/.task/debug-signing/debug.keystore
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+          cache-dependency-path: |
+            package-lock.json
+            scripts/android-signing.gradle
+      - name: Cài phụ thuộc và kiểm chứng web
+        run: |
+          npm ci
+          npx tsc --noEmit
+          npx vitest run
+          npm run build
+          node scripts/check-text-only.mjs
+      - name: Sinh dự án Android và vá cấu hình
+        run: |
+          npx cap add android
+          node scripts/patch-android.mjs
+      - name: Sinh icon và splash từ SVG
+        run: node scripts/generate-android-assets.mjs
+      - name: Đồng bộ plugin và kiểm tra lại cấu hình
+        run: |
+          npx cap sync android
+          node scripts/patch-android.mjs
+      - name: Cài Android SDK theo template Capacitor
+        shell: bash
+        run: |
+          SDK_VERSION=$(node --input-type=module -e "import{readFileSync}from'node:fs';const s=readFileSync('android/variables.gradle','utf8').match(/compileSdkVersion\s*=\s*(\d+)/);if(!s)throw Error('Không tìm thấy compileSdkVersion');console.log(s[1]);")
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-$SDK_VERSION" "platform-tools"
+      # Cache này chỉ chứa khóa debug dùng thử, không bao giờ chứa khóa release.
+      # GitHub cache có phạm vi nhánh và có thể bị thu hồi; xem docs/ANDROID-DEBUG.md.
+      - name: Khôi phục khóa debug để thử cài đè
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .task/debug-signing
+          key: nhanvan-debug-signing-v1
+      - name: Tạo khóa debug khi cache chưa có
+        shell: bash
+        run: |
+          if [ ! -f "$ANDROID_DEBUG_KEYSTORE" ]; then
+            mkdir -p "$(dirname "$ANDROID_DEBUG_KEYSTORE")"
+            keytool -genkeypair -noprompt -keystore "$ANDROID_DEBUG_KEYSTORE" \
+              -storetype JKS -storepass android -keypass android \
+              -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+      - name: Build APK debug
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+      - name: Kiểm tra chữ ký và chuẩn bị APK
+        shell: bash
+        run: |
+          mkdir -p .task/artifacts
+          cp android/app/build/outputs/apk/debug/app-debug.apk .task/artifacts/NhanVan-debug.apk
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -n 1)
+          test -n "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs .task/artifacts/NhanVan-debug.apk
+          cd .task/artifacts
+          sha256sum NhanVan-debug.apk > NhanVan-debug.apk.sha256
+      - name: Tải APK lên artifact (14 ngày)
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: NhanVan-debug.apk
+          path: |
+            .task/artifacts/NhanVan-debug.apk
+            .task/artifacts/NhanVan-debug.apk.sha256
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

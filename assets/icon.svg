@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Nhàn Vân · 雲</title>
+  <desc id="desc">Chữ Vân vẽ bằng nét, trong ấn tròn vàng đồng trên nền xanh đen.</desc>
+  <rect width="1024" height="1024" rx="180" fill="#08191a"/>
+  <circle cx="512" cy="512" r="314" fill="#0d2323" stroke="#d9b778" stroke-width="12"/>
+  <circle cx="512" cy="512" r="294" fill="none" stroke="#d9b778" stroke-opacity=".28" stroke-width="3"/>
+  <!-- 雲: phần 雨 ở trên, phần 云 ở dưới; không phụ thuộc font hệ thống. -->
+  <g fill="none" stroke="#d9b778" stroke-width="23" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M390 325H634 M512 325V511 M356 444V382H668V444"/>
+    <path d="M405 425L445 435 M405 477L445 487 M576 425L616 435 M576 477L616 487" stroke-width="17"/>
+    <path d="M400 553H624 M370 611H654 M491 613L423 691L603 680 M570 648L626 702"/>
+  </g>
+  <path d="M335 754Q425 725 512 745T689 748" fill="none" stroke="#88cfb6" stroke-opacity=".55" stroke-width="5" stroke-linecap="round"/>
+</svg>
