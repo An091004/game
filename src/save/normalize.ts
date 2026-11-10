@@ -95,6 +95,8 @@ export function normalize(input: unknown): GameState {
       1e15,
     );
   s.settings.theme = raw.settings?.theme === "light" ? "light" : "dark";
+  for (const key of ["music", "haptics", "batterySaver"] as const)
+    s.settings[key] = raw.settings?.[key] === true;
   s.settings.fontScale = [0.9, 1, 1.1, 1.2].includes(
     raw.settings?.fontScale ?? 1,
   )

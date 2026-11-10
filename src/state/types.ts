@@ -47,7 +47,13 @@ export interface GameState {
     calamities: number;
     offlineSeconds: number;
   };
-  settings: { theme: "dark" | "light"; fontScale: number };
+  settings: {
+    theme: "dark" | "light";
+    fontScale: number;
+    music: boolean;
+    haptics: boolean;
+    batterySaver: boolean;
+  };
 }
 export interface Realm {
   name: string;

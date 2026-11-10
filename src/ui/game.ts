@@ -1,3 +1,9 @@
+import { MOBILE } from "../data/mobile";
+import { setupMobile } from "./mobile";
+import { openDialog, closeDialog, closeTopDialog } from "./dialogs";
+import { createBackHandler } from "../engine/back";
+import { bindAndroidBack, exitAndroid, setSystemTheme } from "./native";
+import { createMusic } from "./music";
 import { BALANCE } from "../data/balance";
 import { startAmbience } from "./ambience";
 import { createProgression } from "../engine/progression";
@@ -35,19 +41,41 @@ export async function startGame() {
 
   /* Chỉ nhận các trường dữ liệu hợp lệ, không đưa dữ liệu HTML lạ vào giao diện. */
 
-  let ambient: {
-    ctx: AudioContext;
-    interval: ReturnType<typeof setInterval>;
-  } | null = null;
   let pendingGrand: {
     next: number;
   } | null = null;
   let state = loaded.state ?? newState();
   let activePage = "practice",
-    soundOn = false,
     holdValue = 0,
     holdStart = 0,
     holdFrame = 0;
+  let foreground = !document.hidden;
+  setupMobile();
+  const music = createMusic(
+    () => state.settings.music,
+    () => foreground,
+    () => toast(TEXT.message130),
+  );
+  const ambience = startAmbience(
+    () => foreground && !state.settings.batterySaver,
+  );
+  const back = createBackHandler({
+    closeDialog: closeTopDialog,
+    page: () => activePage,
+    navigate: changePage,
+    hint: () => toast(MOBILE.exitHint),
+    flush: () => {
+      advanceRealtime();
+      return persist(false);
+    },
+    exit: exitAndroid,
+    failed: () => toast(MOBILE.exitFailed),
+  });
+  const updateSystemTheme = () => {
+    void setSystemTheme(state.settings.theme).catch(() =>
+      toast(MOBILE.barsFailed),
+    );
+  };
   const progression = createProgression(() => state);
   const {
     currentCost,
@@ -76,7 +104,7 @@ export async function startGame() {
     ...progression,
     state: () => state,
     activePage: () => activePage,
-    soundOn: () => soundOn,
+    soundOn: () => state.settings.music,
     stageName,
     minorName,
   });
@@ -211,7 +239,11 @@ export async function startGame() {
       };
       $("stormHeading").textContent = TEXT.message021(stageName(next));
       $("stormDesc").textContent = TEXT.message022;
-      $("stormOverlay").hidden = false;
+      back.reset();
+      openDialog($("stormOverlay"), () => {
+        pendingGrand = null;
+        endHold();
+      });
       holdValue = 0;
       $("holdButton").style.setProperty("--hold", "0%");
       $("holdLabel").textContent = TEXT.message023;
@@ -236,7 +268,7 @@ export async function startGame() {
     animateRise();
     toast(TEXT.message026(stageName(), gift));
     if (grand) {
-      $("stormOverlay").hidden = true;
+      closeDialog($("stormOverlay"));
       pendingGrand = null;
       stopHold();
     }
@@ -396,22 +428,14 @@ export async function startGame() {
       toast(TEXT.message049(stageName(n.unlock)));
       return;
     }
+    back.reset();
     activePage = id;
     document
       .querySelectorAll<HTMLElement>(".content-page")
       .forEach((e) => (e.hidden = e.id !== `page-${id}`));
     renderAll();
-    const m = $("main");
-    if (window.innerWidth < 851)
-      m.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    else
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+    $(`page-${id}`).focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }
   /* =====================================================================
    RENDER: chỉ đọc state, không thực hiện logic tích lũy.
@@ -446,8 +470,8 @@ export async function startGame() {
   function openBackup() {
     $("exportText").value = exportString();
     $("importText").value = "";
-    $("backupOverlay").hidden = false;
-    $("exportText").focus();
+    back.reset();
+    openDialog($("backupOverlay"));
   }
   async function copyBackup() {
     const text = $("exportText").value;
@@ -484,7 +508,10 @@ export async function startGame() {
       if (!window.confirm(SAVE_TEXT.confirmImport)) return;
       state = imported;
       activePage = "practice";
-      $("backupOverlay").hidden = true;
+      closeDialog($("backupOverlay"));
+      music.stop();
+      ambience.refresh();
+      updateSystemTheme();
       advanceRealtime(true);
       ensurePlots();
       awardAchievements();
@@ -502,88 +529,12 @@ export async function startGame() {
    ÂM THANH: Web Audio tổng hợp tiếng gió và tiếng chuông êm.
    Mặc định tắt. Không tải nhạc bản quyền, không tự phát.
    ===================================================================== */
-  function ringBell(ctx: AudioContext, destination: AudioNode) {
-    const now = ctx.currentTime;
-    [1, 2.01, 3.95].forEach((harmonic, i) => {
-      const osc = ctx.createOscillator(),
-        gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(440 * harmonic, now);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(
-        [0.044, 0.018, 0.006][i],
-        now + 0.05,
-      );
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + [3.5, 2.3, 1.3][i]);
-      osc.connect(gain).connect(destination);
-      osc.start(now);
-      osc.stop(now + 3.7);
-    });
-  }
-  async function toggleSound() {
-    if (soundOn) {
-      stopSound();
-      renderShell();
-      toast(TEXT.message127);
-      return;
-    }
-    try {
-      const Audio =
-        window.AudioContext ||
-        (
-          window as Window & {
-            webkitAudioContext?: typeof AudioContext;
-          }
-        ).webkitAudioContext;
-      if (!Audio) throw Error(TEXT.message128);
-      const ctx = new Audio();
-      await ctx.resume();
-      const master = ctx.createGain();
-      master.gain.value = 0.35;
-      master.connect(ctx.destination);
-      const len = ctx.sampleRate * 3,
-        buffer = ctx.createBuffer(1, len, ctx.sampleRate),
-        data = buffer.getChannelData(0);
-      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * 0.17;
-      const wind = ctx.createBufferSource(),
-        filter = ctx.createBiquadFilter(),
-        windGain = ctx.createGain();
-      wind.buffer = buffer;
-      wind.loop = true;
-      filter.type = "lowpass";
-      filter.frequency.value = 220;
-      windGain.gain.value = 0.18;
-      wind.connect(filter).connect(windGain).connect(master);
-      wind.start();
-      const lfo = ctx.createOscillator(),
-        lfoGain = ctx.createGain();
-      lfo.frequency.value = 0.07;
-      lfoGain.gain.value = 0.065;
-      lfo.connect(lfoGain).connect(windGain.gain);
-      lfo.start();
-      ringBell(ctx, master);
-      const interval = setInterval(() => {
-        if (soundOn && ctx.state === "running") ringBell(ctx, master);
-      }, 17000);
-      ambient = {
-        ctx,
-        interval,
-      };
-      soundOn = true;
-      renderShell();
-      toast(TEXT.message129);
-    } catch (e) {
-      soundOn = false;
-      toast(TEXT.message130);
-    }
-  }
-  function stopSound() {
-    soundOn = false;
-    if (ambient) {
-      clearInterval(ambient.interval);
-      ambient.ctx.close().catch(() => {});
-      ambient = null;
-    }
+  function toggleSound() {
+    state.settings.music = !state.settings.music;
+    if (state.settings.music) void music.start();
+    else music.stop();
+    renderAll();
+    void persist();
   }
   /* Thiên kiếp: giữ nút 1,35 giây, không giới hạn lượt thử. */
   function stopHold() {
@@ -673,7 +624,7 @@ export async function startGame() {
         openBackup();
         break;
       case "close-backup":
-        $("backupOverlay").hidden = true;
+        closeDialog($("backupOverlay"));
         break;
       case "copy-save":
         copyBackup();
@@ -685,13 +636,12 @@ export async function startGame() {
         importSave();
         break;
       case "close-storm":
-        $("stormOverlay").hidden = true;
-        pendingGrand = null;
-        endHold();
+        closeDialog($("stormOverlay"));
         break;
       case "toggle-theme":
         state.settings.theme =
           state.settings.theme === "dark" ? "light" : "dark";
+        updateSystemTheme();
         renderAll();
         persist();
         break;
@@ -699,7 +649,7 @@ export async function startGame() {
         toggleSound();
         break;
       case "font-up": {
-        const sizes = [0.9, 1, 1.1, 1.2],
+        const sizes = MOBILE.fontSizes,
           i = sizes.indexOf(state.settings.fontScale);
         state.settings.fontScale = sizes[Math.min(sizes.length - 1, i + 1)];
         renderAll();
@@ -707,7 +657,7 @@ export async function startGame() {
         break;
       }
       case "font-down": {
-        const sizes = [0.9, 1, 1.1, 1.2],
+        const sizes = MOBILE.fontSizes,
           i = sizes.indexOf(state.settings.fontScale);
         state.settings.fontScale = sizes[Math.max(0, i - 1)];
         renderAll();
@@ -716,25 +666,48 @@ export async function startGame() {
       }
     }
   });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      if (!$("backupOverlay").hidden) $("backupOverlay").hidden = true;
-      if (!$("stormOverlay").hidden) {
-        $("stormOverlay").hidden = true;
-        pendingGrand = null;
-        endHold();
+  document.addEventListener("change", (e) => {
+    if (!(e.target instanceof HTMLInputElement)) return;
+    const key = e.target.dataset.setting;
+    if (key === "theme") {
+      state.settings.theme = e.target.checked ? "light" : "dark";
+      updateSystemTheme();
+    } else if (key === "music" || key === "haptics" || key === "batterySaver") {
+      state.settings[key] = e.target.checked;
+      if (key === "music") {
+        if (state.settings.music) void music.start();
+        else music.stop();
       }
-    }
+      ambience.refresh();
+    } else return;
+    renderAll();
+    void persist();
+  });
+  document.addEventListener("click", (e) => {
+    if (
+      e.target instanceof Element &&
+      !e.target.closest('[data-action="toggle-sound"], [data-setting="music"]')
+    )
+      void music.start();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") void music.start();
   });
 
   const pause = () => {
+    foreground = false;
+    back.reset();
+    ambience.refresh();
     advanceRealtime();
     manager.markDirty(state);
     void manager.flush();
-    stopSound();
+    music.stop();
     endHold();
   };
   const resume = () => {
+    foreground = true;
+    back.reset();
+    ambience.refresh();
     advanceRealtime(true);
     awardAchievements();
     manager.markDirty(state);
@@ -757,6 +730,9 @@ export async function startGame() {
     manager.markDirty(state);
     renderAll();
   }, 1000);
-  startAmbience();
+  updateSystemTheme();
+  await bindAndroidBack(() => back.press()).catch(() =>
+    toast(MOBILE.nativeFailed),
+  );
   renderAll();
 }
