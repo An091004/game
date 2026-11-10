@@ -1,10 +1,10 @@
 import { $ } from "./dom";
-export function startAmbience() {
+export function startAmbience(enabled: () => boolean) {
   const cvs = $("sky"),
     ctx = cvs.getContext("2d", {
       alpha: true,
     });
-  if (!ctx) return;
+  if (!ctx) return { refresh: () => {} };
   let w = 0,
     h = 0,
     particles: {
@@ -15,7 +15,8 @@ export function startAmbience() {
       phase: number;
     }[] = [],
     prev = 0;
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let frame = 0;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
   function resize() {
     w = window.innerWidth;
     h = window.innerHeight;
@@ -25,7 +26,7 @@ export function startAmbience() {
     ctx!.setTransform(ratio, 0, 0, ratio, 0, 0);
     particles = Array.from(
       {
-        length: w < 650 ? 22 : 45,
+        length: w < 650 ? 22 : 40,
       },
       () => ({
         x: Math.random() * w,
@@ -41,8 +42,10 @@ export function startAmbience() {
     passive: true,
   });
   function draw(t: number) {
-    requestAnimationFrame(draw);
-    if (document.hidden || t - prev < 33) return;
+    frame = 0;
+    if (!enabled() || document.hidden || reduce.matches) return;
+    frame = requestAnimationFrame(draw);
+    if (t - prev < 1000 / 30) return;
     const delta = Math.min(t - prev, 80);
     prev = t;
     ctx!.clearRect(0, 0, w, h);
@@ -60,5 +63,15 @@ export function startAmbience() {
       ctx!.fill();
     }
   }
-  if (!reduce) requestAnimationFrame(draw);
+  function refresh() {
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0;
+    prev = 0;
+    ctx!.clearRect(0, 0, w, h);
+    if (enabled() && !document.hidden && !reduce.matches)
+      frame = requestAnimationFrame(draw);
+  }
+  reduce.addEventListener("change", refresh);
+  refresh();
+  return { refresh };
 }

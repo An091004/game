@@ -36,7 +36,13 @@ export function newState(): GameState {
       calamities: 0,
       offlineSeconds: 0,
     },
-    settings: { theme: "dark", fontScale: 1 },
+    settings: {
+      theme: "dark",
+      fontScale: 1,
+      music: false,
+      haptics: false,
+      batterySaver: false,
+    },
   };
 }
 export function resizePlots(s: GameState) {

@@ -1,3 +1,37 @@
+# Kiểm chứng giai đoạn 4
+
+Ngày 10/11/2026; Windows, Node 24.22.1, npm 12.2.1. Build APK được tạm hoãn theo yêu cầu người dùng; không chạy cap add, Gradle hay Android SDK.
+
+| Lệnh | Kết quả thực tế |
+| --- | --- |
+| npm ci | Đạt; cài 192 packages, audit 193; còn 4 moderate ở công cụ dev như giai đoạn 3 |
+| npx tsc --noEmit | Đạt |
+| npx vitest run | Đạt 108/108 test trong 6 file |
+| npm run build | Đạt; 57 modules, có font Latin/tiếng Việt trong dist |
+| actionlint v1.7.12 | Đạt hai workflow; không chạy ShellCheck/Pyflakes |
+| git diff --check | Đạt |
+
+22 test mới bao phủ: save v1/v2 bổ sung cài đặt nhưng giữ tiến trình, round-trip cài đặt, từ chối boolean sai kiểu; Back đóng modal trước, trang phụ về Thêm rồi Tu luyện, hai lần trong 2 giây, quá hạn/đồng hồ lùi/reset khi xuống nền, chờ flush/chống lặp/lỗi lưu/lỗi native; ánh xạ menu; adapter Back/SystemBars không gọi plugin trên web và gọi đúng API khi giả lập Android. 86 test cũ giữ nguyên và đạt.
+
+Kiểm tra Edge headless 157.0.4341.42 trên bản production với profile và save thử riêng, không dùng dữ liệu trình duyệt cá nhân. 10 nhóm đạt:
+
+- Bốn mục SVG và khóa theo cảnh giới.
+- Cài đặt lưu sau mở lại; nhạc chờ thao tác, đóng AudioContext khi tắt.
+- Tick không làm mất focus nút cài đặt; trang phụ đánh dấu Thêm.
+- Chín màn ở 320/390/844/850px và tám màn sidebar ở 1280px, chữ 120%: không tràn ngang, mọi nút/checkbox đang hiện có vùng chạm ít nhất 44×44px.
+- Sao lưu chặn nền bằng inert, giữ vòng Tab và nhập/xuất Base64 thành công.
+- Bế quan chồng lên Sao lưu: Escape đóng từng lớp, nền vẫn khóa cho tới lớp cuối, trả focus đúng.
+- Đóng thiên kiếp bằng Escape giữ cảnh giới.
+- Safe area giả lập top 24px/bottom 34px/left-right 10px: modal và nút thanh dưới nằm trong vùng an toàn.
+- Tiết kiệm pin, thay đổi reduced-motion và xuống nền dừng vẽ hạt; xuống nền đóng âm thanh.
+- Không lỗi JavaScript và không yêu cầu tài nguyên ngoài origin; font/script được đóng gói.
+
+Chạy lại 8 nhóm hồi quy SaveManager trên Edge đều đạt: tự lưu 5 giây, đóng/mở giữ tiến trình, migration v1 và giới hạn 8 giờ, xuất/nhập có xác nhận, phục hồi backup, hai ô hỏng giữ nguyên dữ liệu, resume trùng chỉ tính một lần và không lỗi JS/tràn ngang. Ảnh và kết quả chi tiết chỉ ở .task/ (bị Git bỏ qua), không commit ảnh nhị phân.
+
+Giới hạn: chưa tạo APK hoặc thử điện thoại thật. Unit test mock bridge và kích thước/safe area giả lập không chứng minh Back vật lý, bàn phím Android, màu thanh hệ thống trên WebView cũ, force-stop hoặc cài đè hoạt động. Lựa chọn rung chỉ được lưu; hiệu ứng haptics triển khai ở giai đoạn 6. npm ci vẫn báo 4 moderate trong cây dev đã ghi ở giai đoạn 3; không cập nhật dependency/lockfile hoặc dùng audit fix --force.
+
+Workflow APK chỉ còn workflow_dispatch, không tự chạy khi push. CI web vẫn bật; trạng thái runner thực tế xem PR, không coi lỗi khóa tài khoản là lỗi test hoặc kết quả test đã chạy.
+
 # Kiểm chứng giai đoạn 3
 
 Ngày 05/11/2026; Windows, Node 24.22.1, npm 12.2.1. Không dùng Android SDK/Gradle trong sandbox.

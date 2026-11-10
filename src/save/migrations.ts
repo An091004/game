@@ -56,6 +56,9 @@ function validate(raw: Record<string, unknown>) {
   const stats = object(raw.stats);
   for (const key of Object.keys(newState().stats)) number(stats[key]);
   const settings = object(raw.settings);
+  for (const key of ["music", "haptics", "batterySaver"])
+    if (settings[key] !== undefined && typeof settings[key] !== "boolean")
+      throw Error(SAVE_TEXT.invalid);
   if (
     !["dark", "light"].includes(String(settings.theme)) ||
     ![0.9, 1, 1.1, 1.2].includes(Number(settings.fontScale))

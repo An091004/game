@@ -1,3 +1,4 @@
+import { openDialog, closeDialog } from "./dialogs";
 import { SAVE_TEXT } from "../data/save";
 
 let status: HTMLElement | null = null;
@@ -35,7 +36,7 @@ export function showSaveBlocked(error?: unknown) {
 }
 export function showOffline(amount: string) {
   const previous = document.getElementById("offlineOverlay");
-  previous?.remove();
+  if (previous) closeDialog(previous);
   const overlay = document.createElement("div");
   overlay.id = "offlineOverlay";
   overlay.className = "overlay";
@@ -50,25 +51,11 @@ export function showOffline(amount: string) {
   const button = document.createElement("button");
   button.className = "primary-button";
   button.textContent = SAVE_TEXT.continue;
-  const site = document.querySelector<HTMLElement>(".site")!;
-  site.inert = true;
-  const close = () => {
-    overlay.remove();
-    site.inert = false;
-    document
-      .querySelector<HTMLButtonElement>('[data-action="meditate"]')
-      ?.focus();
-  };
-  button.onclick = close;
-  overlay.onkeydown = (e) => {
-    if (e.key === "Escape") close();
-    if (e.key === "Tab") {
-      e.preventDefault();
-      button.focus();
-    }
-  };
+  title.id = "offlineHeading";
+  overlay.setAttribute("aria-labelledby", title.id);
+  button.onclick = () => closeDialog(overlay);
   card.append(title, message, button);
   overlay.append(card);
   document.body.append(overlay);
-  button.focus();
+  openDialog(overlay, () => overlay.remove());
 }

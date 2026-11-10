@@ -60,11 +60,21 @@ Nếu gặp cảnh báo không ghi được, hãy xuất giữ tiến độ đan
 
 ## Android
 
+**Build APK đang tạm hoãn theo yêu cầu ngày 10/11/2026.** Giai đoạn 4 tiếp tục làm và kiểm tra giao diện trên web; workflow APK chỉ còn `workflow_dispatch`, không chạy khi push. CI web vẫn giữ nguyên.
+
 Giai đoạn 3 bổ sung cấu hình Capacitor cho **Nhàn Vân** (`com.nhanvan.game`) và workflow **APK debug Nhàn Vân**. Actions sinh Android, icon/splash từ SVG, cấu hình Auto Backup cho Preferences và build APK debug. Artifact `NhanVan-debug.apk` giữ 14 ngày, chỉ xuất hiện khi job build thành công.
 
 Xem [hướng dẫn tải và cài APK debug](docs/ANDROID-DEBUG.md), bao gồm lỗi billing, giới hạn khóa debug/cache và các bước thử save trên điện thoại. Không cần Secrets ở giai đoạn này. Script ký release đã có chỗ đọc biến môi trường, nhưng workflow phát hành và khóa release để giai đoạn 7.
 
 Chủ repo duyệt và merge PR giai đoạn 3. Yêu cầu merge trong chat trước đây đã được thực hiện riêng cho PR giai đoạn 1 và 2; không áp dụng cho PR mới. Trạng thái thực tế xem [tiến độ](docs/PROGRESS.md).
+
+## Giao diện di động
+
+Màn hình tối đa 850px có bốn mục dưới đáy: Tu luyện, Du ngoạn, Động phủ, Thêm. Công pháp, Luyện đan, Nhật ký, Thành tựu, Cài đặt và Sao lưu nằm trong Thêm. Màn hình lớn giữ thanh bên. Icon SVG và font tiếng Việt đều đóng gói sẵn; không tải từ CDN. Tab Nhân vật để giai đoạn 5.
+
+Cài đặt sáng/tối, cỡ chữ 90–120%, nhạc, quyền rung và tiết kiệm pin lưu cùng tiến trình. Save cũ được thêm giá trị mặc định, giữ `saveVersion: 2`. Nhạc chỉ bắt đầu sau một thao tác, dừng khi xuống nền; quay lại chạm để phát tiếp. Tiết kiệm pin tắt hiệu ứng trang trí, không ngừng tu luyện. Lựa chọn rung được lưu trước; hiệu ứng haptics thực tế thuộc giai đoạn 6.
+
+Back Android đóng hộp thoại trước, quay từ màn phụ về Thêm rồi Tu luyện. Tại Tu luyện, bấm hai lần trong 2 giây để thoát; game chờ lưu thành công trước khi gọi thoát. Các adapter native đã được kiểm tra bằng mô phỏng, cần thử lại trên APK khi tiếp tục build.
 
 ## Kiểm thử và giấy phép
 

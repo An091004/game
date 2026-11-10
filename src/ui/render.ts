@@ -1,3 +1,4 @@
+import { renderNavigation, renderSettings } from "./mobile";
 import { BALANCE } from "../data/balance";
 import { TEXT } from "../data/text";
 import { CONFIG, STAGES, NAV } from "../data/config";
@@ -18,11 +19,7 @@ export function createRenderer(deps: Dependencies) {
    RENDER: chỉ đọc state, không thực hiện logic tích lũy.
    ===================================================================== */
   function renderNav() {
-    const state = deps.state();
-    $("navigation").innerHTML = NAV.map(
-      (n) =>
-        `<button type="button" class="nav-item ${deps.activePage() === n.id ? "active" : ""} ${state.stage < n.unlock ? "locked" : ""}" data-action="goto" data-id="${n.id}" ${deps.activePage() === n.id ? 'aria-current="page"' : ""}><span class="nav-icon">${n.icon}</span>${n.label}${state.stage < n.unlock ? '<span class="lock-mark">♙</span>' : ""}</button>`,
-    ).join("");
+    renderNavigation(deps.state(), deps.activePage());
   }
   function renderShell() {
     const state = deps.state();
@@ -328,6 +325,7 @@ export function createRenderer(deps: Dependencies) {
   function renderAll() {
     const state = deps.state();
     renderNav();
+    renderSettings(state);
     renderShell();
     renderPractice();
     if (deps.activePage() === "manuals") renderManuals();

@@ -699,4 +699,6 @@ export const NAV = [
   { id: "alchemy", icon: "⚗", label: "Luyện đan", unlock: 4 },
   { id: "journal", icon: "✍", label: "Nhật ký tu hành", unlock: 0 },
   { id: "achievements", icon: "✧", label: "Thành tựu", unlock: 0 },
+  { id: "more", icon: "", label: "Thêm", unlock: 0 },
+  { id: "settings", icon: "", label: "Cài đặt", unlock: 0 },
 ];

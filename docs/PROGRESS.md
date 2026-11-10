@@ -13,8 +13,8 @@
 | --- | --- |
 | 1. Vite + TypeScript + CI + tài liệu | Đã merge PR #1 |
 | 2. SaveManager + ngoại tuyến + tests | Đã merge PR #2 |
-| 3. Capacitor + APK debug | PR #3 đã triển khai và kiểm chứng cục bộ; Actions bị khóa billing, chưa có APK |
-| 4. Giao diện Android | Chưa bắt đầu |
+| 3. Capacitor + APK debug | PR #3 đang mở; đã triển khai, APK tạm hoãn theo yêu cầu ngày 10/11/2026 |
+| 4. Giao diện Android | Đã triển khai và kiểm chứng web; chờ duyệt PR và thử Android khi có APK |
 | 5. Nhân vật SVG | Chưa bắt đầu |
 | 6. Notifications/haptics/save file | Chưa bắt đầu |
 | 7. Ký và phát hành APK | Chưa bắt đầu |
@@ -45,11 +45,10 @@
 
 ## Việc tiếp theo
 
-1. Chủ repo duyệt PR giai đoạn 3; quyền merge trước đó chỉ dành cho giai đoạn 1 và 2.
-2. Xử lý khóa tài khoản GitHub do billing issue, chạy lại CI và workflow APK debug. Khi bắt đầu giai đoạn này, lần chạy gần nhất trên main vẫn không có bước thực thi vì billing.
-3. Tải artifact NhanVan-debug.apk khi build thành công và làm theo docs/ANDROID-DEBUG.md; chưa cần Secrets ký release.
-4. Giữ bản xuất Base64 trước khi cài đè/đổi nơi chơi. Khóa debug cache theo nhánh không thay thế khóa release bền vững.
-5. Gửi ảnh/log thử APK trước khi sang giai đoạn 4.
+1. Chủ repo duyệt PR #3 và PR giai đoạn 4. PR giai đoạn 4 đặt base vào nhánh giai đoạn 3 để diff chỉ chứa giao diện; sau khi merge #3, chuyển base PR giai đoạn 4 về main và kiểm tra lại diff trước khi merge. Agent chưa merge các PR này.
+2. APK tiếp tục tạm hoãn. Khi sẵn sàng, xử lý việc Actions không khởi chạy và chạy thủ công workflow đúng nhánh; theo docs/ANDROID-DEBUG.md. Không cần đổi billing/Secrets/cài đặt repo trong giai đoạn 4.
+3. Giữ bản xuất Base64 trước khi cài đè/đổi nơi chơi; thử Back, safe area và giao diện sáng/tối trên điện thoại khi có APK.
+4. Bước phát triển tiếp theo là giai đoạn 5: nhân vật SVG và tab Nhân vật, chỉ triển khai khi người dùng yêu cầu.
 
 ## Giai đoạn 3
 
@@ -65,4 +64,17 @@
 
 ## Giới hạn
 
-Hai ô cùng hỏng sẽ dừng khởi tạo, chưa có màn nhập file phục hồi riêng. Callback lưu native không bảo đảm hoàn tất nếu hệ điều hành cưỡng bức dừng ngay lập tức. Kiểm tra adapter giả lập không thay thế thử force-stop/cài đè/Auto Backup trên Android. Native/web khác origin không tự chia sẻ save. CRC32 không phải chữ ký chống sửa dữ liệu. Thanh điều hướng và nhân vật vẫn chờ đúng giai đoạn tương ứng.
+Hai ô cùng hỏng sẽ dừng khởi tạo, chưa có màn nhập file phục hồi riêng. Callback lưu native không bảo đảm hoàn tất nếu hệ điều hành cưỡng bức dừng ngay lập tức. Kiểm tra adapter giả lập không thay thế thử force-stop/cài đè/Auto Backup trên Android. Native/web khác origin không tự chia sẻ save. CRC32 không phải chữ ký chống sửa dữ liệu. Nhân vật và hiệu ứng rung vẫn chờ đúng giai đoạn tương ứng.
+
+## Giai đoạn 4
+
+- Ngày 10/11/2026 người dùng yêu cầu bỏ qua bước build app và tiếp tục bước kế tiếp. Yêu cầu này cho phép làm giai đoạn 4 dù giai đoạn 3 chưa có APK; không thay nội dung kế hoạch gốc và không đánh dấu APK đã nghiệm thu.
+- Nhánh `codex/giai-doan-4-mobile-ui` nối từ `codex/giai-doan-3-capacitor-debug` tại 2dcdea2. PR #3 còn mở khi bắt đầu; main vẫn chứa giai đoạn 1 và 2.
+- Bốn mục dưới đáy, Thêm chứa các trang phụ và Sao lưu; icon SVG nội bộ, font npm tiếng Việt sẵn có. Không thêm tab Nhân vật trước giai đoạn 5.
+- Safe area bốn cạnh, modal cuộn trong chiều cao màn hình, vùng chạm tối thiểu 44px. Màn hình lớn giữ thanh bên. Giữ phong cách xanh đen/vàng đồng và toàn bộ cân bằng, nội dung gốc.
+- Quản lý lớp hộp thoại, chặn thao tác nền bằng inert, giữ Tab trong modal và trả focus khi đóng. Back Android đóng lớp trên cùng trước; màn phụ → Thêm → Tu luyện; Back hai lần trong 2 giây ở Tu luyện mới thoát và chờ flush thành công. Reset khi đổi trang/xuống nền; chống gọi thoát lặp trong khi đang lưu.
+- Cài đặt lưu cùng save: sáng/tối, cỡ chữ, nhạc, cho phép rung, tiết kiệm pin. Thêm trường tùy chọn tương thích v1/v2, không đổi saveVersion; dữ liệu sai kiểu bị từ chối. Hiệu ứng rung thực tế thuộc giai đoạn 6.
+- Tách music/mobile/dialogs/native thành module. Nhạc khởi động sau thao tác, dừng khi ở nền; hiệu ứng nền tối đa 40 hạt, tối đa 30fps, hủy RAF khi ở nền/tiết kiệm pin/reduced-motion. SystemBars của Capacitor 8 đổi biểu tượng theo theme; portrait và splash giữ cấu hình giai đoạn 3.
+- `android-debug.yml` chỉ chạy tay để hoãn APK; không đổi Secrets, billing hoặc cài đặt GitHub. CI web vẫn chạy theo push/PR.
+- Kiểm chứng: 108/108 Vitest trong 6 file, typecheck/build đạt; 10 nhóm kiểm tra Edge 157.0.4341.42 đạt, gồm 320/390/844/850/1280px, cỡ chữ 120%, modal chồng nhau, save cũ, âm thanh và tiết kiệm pin. Chi tiết và kết quả chuỗi lệnh cuối ở TESTING.md.
+- Chưa build hay thử APK. Safe area mô phỏng và adapter Back/SystemBars không thay thế kiểm thử WebView/điện thoại thật; đặc biệt cần kiểm tra màu thanh hệ thống ở WebView cũ.

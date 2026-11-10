@@ -1,8 +1,7 @@
 name: APK debug Nhàn Vân
 
 on:
-  push:
-    branches: ['**']
+  # Tạm hoãn build APK theo yêu cầu; bật chạy tay khi sẵn sàng kiểm thử Android.
   workflow_dispatch:
 
 permissions:

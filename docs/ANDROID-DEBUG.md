@@ -4,10 +4,12 @@
 
 ## Tải bản cài thử
 
-1. Mở [Actions của repo](https://github.com/An091004/game/actions), chọn **APK debug Nhàn Vân** và lần chạy đúng nhánh/commit. Workflow tự chạy khi push nhánh, kể cả nhánh PR.
+Ngày 10/11/2026 người dùng yêu cầu tạm bỏ qua build APK để làm giao diện. Từ giai đoạn 4, workflow chỉ chạy thủ công; push/PR không tự tạo APK.
+
+1. Khi muốn tiếp tục build và workflow đã có trên `main`, mở [Actions của repo](https://github.com/An091004/game/actions) → **APK debug Nhàn Vân → Run workflow**, chọn nhánh/commit cần thử. Chủ repo cần duyệt thay đổi trước khi merge.
 2. Đợi job `apk` thành công. Ở cuối trang lần chạy, tải artifact **NhanVan-debug.apk** (giữ 14 ngày). GitHub tải artifact dưới dạng ZIP; giải nén lấy `NhanVan-debug.apk` và file SHA-256 đi kèm.
 3. Chép APK vào điện thoại Android 7 trở lên. Mở file, cho phép ứng dụng đang mở file cài từ nguồn này nếu Android yêu cầu, rồi cài **Nhàn Vân**.
-4. Khi workflow đã vào `main`, có thể vào **Actions → APK debug Nhàn Vân → Run workflow**, chọn nhánh rồi chạy lại. Trước khi merge, nếu chưa thấy nút chạy tay thì dùng lần chạy tự động từ push của PR; không cần thêm Secrets.
+4. Nếu chưa thấy nút chạy tay, workflow cần có trên nhánh mặc định trước. Không cần thêm Secrets cho bản debug; không chạy lại workflow cũ khi muốn thử mã giai đoạn 4.
 
 Nếu job không có bước thực thi và báo `The job was not started because your account is locked due to a billing issue.`, chủ tài khoản cần xử lý vấn đề billing trên GitHub, sau đó chọn **Re-run all jobs**. Repo không tự thay đổi billing hay cài đặt. Khi job chưa chạy thành công thì chưa có APK để tải.
 
@@ -41,4 +43,6 @@ Script Gradle đã có điểm đọc `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE
 4. Xuất save trước; cài đè APK mới có cùng chứng chỉ, kiểm tra tiến trình.
 5. Gửi ảnh màn Tu luyện và Sao lưu, kèm phiên bản Android, model máy, tên nhánh và số run.
 
-Đây là khung native đầu tiên. Thanh điều hướng dưới, safe area hoàn chỉnh và nút Back hai lần để thoát thuộc giai đoạn 4. Chưa đo thời gian khởi động, dung lượng APK hoặc kiểm thử khôi phục Auto Backup thực tế. Không build Gradle/SDK trong sandbox.
+Giai đoạn 4 đã thêm thanh điều hướng dưới, safe area và Back: đóng hộp thoại trên cùng, từ trang phụ về Thêm rồi Tu luyện; tại Tu luyện bấm hai lần trong 2 giây để thoát sau khi lưu. Cần kiểm thử trên máy thật cả điều hướng bằng cử chỉ và ba nút, bàn phím nhập save, vùng tai thỏ, giao diện sáng/tối. Hộp thoại bế quan có thể nằm trên hộp thoại sao lưu; Back phải đóng từng lớp.
+
+Chưa đo thời gian khởi động, dung lượng APK hoặc kiểm thử khôi phục Auto Backup thực tế. Với WebView cũ, Capacitor có thể chèn padding native thay vì safe area CSS; cần kiểm tra màu nền/biểu tượng thanh hệ thống, nhất là giao diện sáng. Không build Gradle/SDK trong sandbox.
