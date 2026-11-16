@@ -23,7 +23,11 @@ try {
         try { $source.CopyTo($target) } finally { $source.Dispose(); $target.Dispose() }
     }
 } finally { $archive.Dispose(); $output.Dispose() }
-$hash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+$archiveHasher = [System.Security.Cryptography.SHA256]::Create()
+$archiveReader = [System.IO.File]::OpenRead($archivePath)
+try {
+    $hash = [System.BitConverter]::ToString($archiveHasher.ComputeHash($archiveReader)).Replace('-', '').ToLowerInvariant()
+} finally { $archiveReader.Dispose(); $archiveHasher.Dispose() }
 [System.IO.File]::WriteAllText(($archivePath + '.sha256'), $hash + '  NhanVan-web.zip' + "`n", [System.Text.UTF8Encoding]::new($false))
 Write-Output $archivePath
 Write-Output ('SHA256: ' + $hash)
