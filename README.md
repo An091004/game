@@ -1,92 +1,58 @@
 # Nhàn Vân · Tu Tiên Ký
 
-Game tu tiên idle một người chơi, giao diện tiếng Việt, phong cách thủy mặc xanh đen và vàng đồng. Linh khí tự tích lũy, có 10 đại cảnh giới, 36 sự kiện du ngoạn và 26 thành tựu.
+Game tu tiên idle một người chơi, tiếng Việt, phong cách thủy mặc xanh đen/vàng đồng. Có 10 đại cảnh giới, 36 sự kiện, 26 thành tựu, nhân vật SVG tùy chỉnh và tiến trình ngoại tuyến tối đa 8 giờ.
 
-Repository: [An091004/game](https://github.com/An091004/game).
+**Dự án đã chuyển sang web ngày 16/11/2026. Không cần APK, Android Studio hoặc Gradle.**
 
-## Chạy web
+- Mã nguồn: [An091004/game](https://github.com/An091004/game).
+- Địa chỉ GitHub Pages: [Nhàn Vân](https://an091004.github.io/game/) — chỉ chơi được khi deployment đã thành công; trạng thái mới nhất ở PR/Actions.
+- Hướng dẫn triển khai và giới hạn: [docs/WEB.md](docs/WEB.md).
 
-Cài Node.js 24, mở terminal tại thư mục repo:
+## Chạy và build
+
+Cài Node.js 24, chạy trong repo:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Mở địa chỉ Vite in trong terminal. Bản mới dùng Vite nên cần chạy qua HTTP; không mở trực tiếp file HTML ở gốc. Bản HTML v1 độc lập được giữ tại `legacy/index.html` để tham chiếu và kiểm tra tương thích.
-
-## Kiểm chứng và build
+Build để đưa lên hosting hoặc chơi bản production:
 
 ```sh
 npx tsc --noEmit
 npx vitest run
 npm run build
-npm run preview
+npm run start:web
 ```
 
-Build tạo thư mục `dist/`. Font Noto Serif và Be Vietnam Pro (Latin + tiếng Việt) đi kèm bản build từ npm, không cần CDN. Không commit `dist/`, font nhị phân, `node_modules/` hoặc thư mục `android/`.
+Mở http://127.0.0.1:4173/. Không mở index.html trực tiếp bằng file://. Trên Windows, chạy `npm run package:web` để tạo `release/NhanVan-web.zip`; giải nén rồi mở Chay-Web.cmd. Bản ZIP chỉ cần Node.js, không cần npm install. Muốn dừng server, nhấn Ctrl+C.
 
-Nếu triển khai website, phục vụ **nội dung dist/** bằng hosting tĩnh. Không dùng chế độ GitHub Pages đọc trực tiếp nhánh main như bản HTML cũ. `base: './'` cho phép phục vụ dưới đường dẫn con như `/game/`. Hiện chỉ có CI kiểm tra, chưa thêm workflow triển khai Pages.
+## Chơi và lưu
+
+Thanh dưới trên điện thoại có Tu luyện, Nhân vật, Du ngoạn, Động phủ, Thêm. Công pháp, Luyện đan, Nhật ký, Thành tựu, Cài đặt và Sao lưu nằm trong Thêm. Trên máy tính dùng thanh bên. Nhân vật có tên, ba giới tính lựa chọn, ba kiểu tóc và năm màu áo; ngoại hình không làm đổi cân bằng game.
+
+Tiến trình/ngoại hình/cài đặt lưu trong localStorage, hai ô chính/backup kèm checksum. Save cũ v1/v2 vẫn đọc được. Nếu cả hai ô hỏng, game dừng ghi để bảo vệ dữ liệu. Tự lưu tối đa 5 giây và flush khi rời/ẩn tab; khi quay lại chỉ cộng bế quan một lần, tối đa 8 giờ. Đồng hồ lùi không làm cộng lại thời gian cũ.
+
+**Trước khi đổi máy, trình duyệt hoặc chuyển từ localhost sang GitHub Pages, xuất Base64 ở Thêm → Sao lưu hành trình rồi nhập ở nơi mới.** Các origin không tự chia sẻ save. Không xóa dữ liệu trình duyệt nếu chưa sao lưu. CRC32 phát hiện hỏng dữ liệu, không phải chữ ký chống sửa save.
+
+Font Latin/tiếng Việt được nhúng trong CSS, icon và nhân vật SVG không tải tài nguyên ngoài. Sau khi trang tải xong có thể tiếp tục chơi khi mất mạng; mở lại trang cần mạng hoặc server cục bộ. Chưa có PWA/service worker, tài khoản, cloud sync hay thông báo nền.
+
+## Xuất bản
+
+Bản web tĩnh ở `dist/`, dùng asset tương đối nên hoạt động ở `/game/`. Chỉ đưa **nội dung dist/** lên nhánh `gh-pages` rồi chọn Pages → Deploy from a branch → gh-pages → /(root). Không đưa mã Vite/TypeScript ở nhánh nguồn thẳng lên Pages.
+
+Build diễn ra cục bộ. GitHub vẫn phải chạy bước triển khai Pages; nếu run bị khóa billing thì website chưa sẵn sàng dù đã có nhánh. Không cần thêm Secrets hoặc chuyển sang gói trả phí chỉ để chuẩn bị bản web. Chi tiết ở [WEB.md](docs/WEB.md).
+
+Repo chỉ commit file văn bản; font được nhúng dạng data URL. dist/release/node_modules và dữ liệu save riêng tư không nằm trong nhánh nguồn. Mỗi thay đổi nguồn có PR riêng, không tự merge main; xuất bản lên gh-pages tách khỏi việc merge PR.
 
 ## Mã nguồn
 
-- `src/data/`: cảnh giới, hệ số cân bằng, công pháp, sự kiện, thành tựu và chuỗi hiển thị.
-- `src/state/`: kiểu dữ liệu và state ban đầu.
-- `src/engine/`: công thức tu luyện, chi phí và tính linh khí theo thời gian.
-- `src/save/`: SaveManager hai ô, checksum CRC32, migration v1 → v2 và adapter Preferences/localStorage.
-- `src/ui/`: điều phối thao tác, render, định dạng và hiệu ứng nền.
-- `src/character/`: lớp SVG nhân vật, tư thế/hào quang và hoạt ảnh chỉ đọc state.
-- `src/main.ts`, `src/styles.css`, `index.html`: điểm vào, giao diện và khung HTML.
-- `tests/`: đối chiếu với HTML v1 và kiểm tra bảo vệ save.
-- `legacy/index.html`: bản gốc bất biến dùng làm mốc đối chiếu; không được đưa vào dist.
-- `docs/PLAN.md`, `docs/PROGRESS.md`: kế hoạch đầy đủ và trạng thái từng giai đoạn.
+- `src/state/` và `src/save/`: schema, ngoại hình, migrations, lưu/khôi phục.
+- `src/engine/`: công thức game và tiến trình theo thời gian.
+- `src/ui/`: thao tác, render, modal, âm thanh và vòng đời trình duyệt.
+- `src/character/`: SVG nhân vật chỉ đọc state; `src/data/`: cân bằng/nội dung.
+- `legacy/index.html`: bản HTML đầu tiên, giữ làm fixture hồi quy.
+- `scripts/`: kiểm tra văn bản, kiểm tra bản web, server cục bộ và đóng gói ZIP.
 
-Nhân vật đi qua hàm `renderCharacter(state, options?)`; có thể thay SVG bằng ảnh theo lớp về sau. Các thao tác game hiện vẫn được điều phối trong `src/ui/game.ts`; ngoại hình không cộng chỉ số hay thay đổi công thức game.
-
-## Bản lưu và chuyển từ web cũ
-
-Giai đoạn 2 dùng hai khóa `nhan_van_save_main` và `nhan_van_save_backup`. Mỗi ô chứa payload JSON cùng checksum CRC32; payload có `saveVersion: 2` và `lastSeenAt`. CRC32 phát hiện dữ liệu hỏng, không chống người chơi tự sửa save.
-
-Trên Android, adapter dùng Capacitor Preferences. Trên web, adapter dùng localStorage trực tiếp để có thể flush đồng bộ khi pagehide. Nếu Preferences lỗi, game khóa ghi; không tự đổi sang một kho rỗng.
-
-Game đọc ô chính, hỏng thì đọc backup. Nếu cả hai không hợp lệ hoặc lệnh đọc lỗi, game dừng khởi tạo và giữ nguyên dữ liệu. Save từ phiên bản mới hơn cũng khóa ghi, tránh tự hạ phiên bản bằng backup cũ. Mỗi lần ghi giữ bản hợp lệ trước ở backup rồi ghi ô chính, đọc lại xác nhận và xếp tuần tự các lần ghi bất đồng bộ.
-
-Khi chưa có hai ô mới, game tìm khóa v1 `nhan_van_tu_tien_ky_v1`, nâng cấp và giữ nguyên khóa cũ. Khi đã có dữ liệu mới bị hỏng, game không tự quay về khóa v1 có thể đã lỗi thời. Nếu đổi origin (file HTML/website/cổng dev/ứng dụng Android), cần xuất và nhập thủ công; dữ liệu local của các origin không tự chia sẻ.
-
-Tự lưu gom thay đổi trong tối đa 5 giây; tick liên tục không kéo dài mãi hạn lưu. Flush ngay khi xuống nền, visibilitychange hidden và pagehide. Khi mở hoặc quay lại, cộng tối đa 8 giờ bằng công thức, không lặp từng giây. Mốc lastSeenAt không lùi khi đồng hồ bị chỉnh về trước; sự kiện resume trùng không cộng hai lần.
-
-Sao lưu Base64 hiện xuất cả envelope/checksum, vẫn nhập được Base64 v1 và hỏi xác nhận trước khi thay thế. Save mới không nhập ngược vào HTML v1. Xuất/nhập file qua Filesystem + Share để giai đoạn 6.
-
-Nếu gặp cảnh báo không ghi được, hãy xuất giữ tiến độ đang có trước khi tải lại. Nếu cả hai ô hỏng, đừng xóa dữ liệu ứng dụng: giữ nguyên các giá trị hai khóa để kiểm tra. Khi đã phát hiện ô chính thay đổi từ phiên khác, phiên hiện tại dừng ghi. Hai ô và checksum không thay thế bản sao lưu ngoài thiết bị, không đảm bảo khôi phục sau gỡ app/xóa dữ liệu.
-
-## Android
-
-**Build APK đang tạm hoãn theo yêu cầu ngày 10/11/2026.** Giai đoạn 4–5 tiếp tục làm và kiểm tra giao diện trên web; workflow APK chỉ còn `workflow_dispatch`, không chạy khi push. CI web vẫn giữ nguyên.
-
-Giai đoạn 3 bổ sung cấu hình Capacitor cho **Nhàn Vân** (`com.nhanvan.game`) và workflow **APK debug Nhàn Vân**. Actions sinh Android, icon/splash từ SVG, cấu hình Auto Backup cho Preferences và build APK debug. Artifact `NhanVan-debug.apk` giữ 14 ngày, chỉ xuất hiện khi job build thành công.
-
-Xem [hướng dẫn tải và cài APK debug](docs/ANDROID-DEBUG.md), bao gồm lỗi billing, giới hạn khóa debug/cache và các bước thử save trên điện thoại. Không cần Secrets ở giai đoạn này. Script ký release đã có chỗ đọc biến môi trường, nhưng workflow phát hành và khóa release để giai đoạn 7.
-
-Chủ repo duyệt và merge PR giai đoạn 3. Yêu cầu merge trong chat trước đây đã được thực hiện riêng cho PR giai đoạn 1 và 2; không áp dụng cho PR mới. Trạng thái thực tế xem [tiến độ](docs/PROGRESS.md).
-
-## Giao diện di động
-
-Màn hình tối đa 850px có năm mục dưới đáy: Tu luyện, Nhân vật, Du ngoạn, Động phủ, Thêm. Công pháp, Luyện đan, Nhật ký, Thành tựu, Cài đặt và Sao lưu nằm trong Thêm. Màn hình lớn giữ thanh bên. Icon SVG và font tiếng Việt đều đóng gói sẵn; không tải từ CDN.
-
-Cài đặt sáng/tối, cỡ chữ 90–120%, nhạc, quyền rung và tiết kiệm pin lưu cùng tiến trình. Save cũ được thêm giá trị mặc định, giữ `saveVersion: 2`. Nhạc chỉ bắt đầu sau một thao tác, dừng khi xuống nền; quay lại chạm để phát tiếp. Tiết kiệm pin tắt hiệu ứng trang trí, không ngừng tu luyện. Lựa chọn rung được lưu trước; hiệu ứng haptics thực tế thuộc giai đoạn 6.
-
-Back Android đóng hộp thoại trước, quay từ màn phụ về Thêm rồi Tu luyện. Tại Tu luyện, bấm hai lần trong 2 giây để thoát; game chờ lưu thành công trước khi gọi thoát. Các adapter native đã được kiểm tra bằng mô phỏng, cần thử lại trên APK khi tiếp tục build.
-
-## Nhân vật
-
-Lần đầu chưa có nhân vật, game hiện màn chọn tên (1–24 ký tự), giới tính nam/nữ/trung tính, ba kiểu tóc và năm màu áo. Có xem trước; chọn **Bắt đầu hành trình** để lưu, hoặc **Để sau** để chơi với hình mặc định. Có thể đổi lại tại **Nhân vật → Đổi tên và ngoại hình**. Bản nháp không ghi vào tiến trình nếu đóng bằng nút hủy/Escape/Back. Nếu bỏ qua, game sẽ mời tạo lại lần mở sau.
-
-Nhân vật ngồi thiền trên đá trong hero, đi bộ ở Du ngoạn, ngồi cạnh lò ở Luyện đan và phát linh quang khi đột phá. Hào quang đổi theo cảnh giới và % linh khí; từ Kết Đan có kim đan, từ Nguyên Anh có tiểu nhân trên đầu. Hoạt ảnh dừng khi ở nền, tiết kiệm pin hoặc giảm chuyển động của hệ thống.
-
-Tab Nhân vật hiển thị các chỉ số hiện có; tổng thời gian tính từ `createdAt` tới `lastSeenAt`, gồm cả thời gian bế quan, không phải số giờ mở app hay số giờ được cộng linh khí. Pháp bảo/Linh thú/Đạo lữ chỉ là ô khóa, chưa có hệ thống hoặc thưởng ẩn.
-
-Ngoại hình nằm trong trường tùy chọn `character`, cùng saveVersion 2. Save v1/v2 cũ thiếu trường này vẫn giữ tiến trình và dùng hình mặc định. Profile có dữ liệu sai kiểu/ngoài lựa chọn bị từ chối để SaveManager phục hồi backup hoặc khóa ghi; không âm thầm đặt lại save. Xuất/nhập Base64 giữ cả nhân vật.
-
-## Kiểm thử và giấy phép
-
-Xem [kết quả kiểm tra](TESTING.md). Chưa gán giấy phép mã nguồn mở cho code dự án. Giấy phép OFL của hai font được giữ trong `public/licenses/` và sao chép vào bản build.
+Xem [TESTING.md](TESTING.md) và [tiến độ](docs/PROGRESS.md). Kế hoạch/hướng dẫn Android cũ được giữ để tra lịch sử, không còn áp dụng. Chưa gán giấy phép mã nguồn mở; giấy phép OFL của font nằm trong public/licenses và bản build.

@@ -25,6 +25,14 @@ export function createRenderer(deps: Dependencies) {
   function renderShell() {
     const state = deps.state();
     document.documentElement.dataset.theme = state.settings.theme;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute(
+        "content",
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--bg")
+          .trim(),
+      );
     document.documentElement.style.setProperty(
       "--font-scale",
       String(state.settings.fontScale),

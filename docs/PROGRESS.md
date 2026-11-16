@@ -1,5 +1,16 @@
 # Tiến độ Nhàn Vân
 
+## Hướng hiện tại: web / GitHub Pages (16/11/2026)
+
+Người dùng yêu cầu build thành web, không cần APK nữa và chọn GitHub Pages của repo An091004/game để có link chơi online. Hướng dẫn hiện hành: [WEB.md](WEB.md). Các mục Android/giai đoạn 6–8 phía dưới là kế hoạch cũ, không tự tiếp tục.
+
+- Nhánh nguồn mới: codex/web-github-pages, nối từ PR #5 tại 9380721; không merge main. Nhánh gh-pages dành riêng cho bản dist đã kiểm chứng.
+- Gỡ toàn bộ package Capacitor, workflow APK, script vá/sinh Android, adapter Preferences/native Back/SystemBars và 32 test riêng cho Android. Giữ logic game/nhân vật, saveVersion 2 và các khóa localStorage cũ. Test cổng lưu nay kiểm lỗi SecurityError/quota của trình duyệt.
+- Không đổi số liệu cân bằng. Vòng đời dùng visibilitychange/pagehide/pageshow; Escape/nút đóng vẫn xử lý modal. Cài đặt rung chưa có hiệu ứng được ẩn nhưng giá trị cũ vẫn giữ trong save.
+- Font nhúng CSS, asset tương đối, favicon SVG và .nojekyll; kiểm tra dist không có nhị phân/symlink. Có server Node chỉ nghe loopback và ZIP để tải/chạy cục bộ.
+- npm ci/typecheck/109 test/build web đạt, npm audit 0 vulnerabilities. Trạng thái phát hành Pages thực tế sẽ ghi trong PR; có URL không có nghĩa deployment đã thành công.
+- Được phép cấu hình riêng Pages để thực hiện yêu cầu này; không đổi Secrets/billing/cài đặt khác.
+
 ## Bối cảnh đã chốt
 
 - Repo: An091004/game; nhánh chính main.

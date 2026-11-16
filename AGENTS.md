@@ -1,13 +1,13 @@
 # AGENTS.md
 
 ## Dự án
-Nhàn Vân: game tu tiên idle thư giãn. Web (Vite + TypeScript) bọc bằng Capacitor thành app Android. Kế hoạch tổng thể ở `docs/PLAN.md`, tiến độ ở `docs/PROGRESS.md`.
+Nhàn Vân: game tu tiên idle thư giãn, web Vite + TypeScript, xuất bản GitHub Pages tại repo An091004/game. Người dùng đã chuyển sang web ngày 16/11/2026, không tiếp tục APK. Kế hoạch Android cũ ở `docs/PLAN.md` chỉ để tham khảo; hướng hiện tại ở `docs/WEB.md`, tiến độ ở `docs/PROGRESS.md`.
 
 ## Quy tắc bắt buộc
 - Chỉ sửa file trong repo này. Làm trên nhánh riêng và tạo PR; không merge vào `main`.
-- Repo chỉ chứa file văn bản, không commit nhị phân. Thư mục `android/` không commit (sinh trong CI).
-- Không commit bí mật. Không đụng Secrets hay cài đặt repo. Không force-push.
-- Không build Android trong sandbox; APK build bằng GitHub Actions.
+- Repo chỉ chứa file văn bản, không commit nhị phân. Font của bản web được nhúng dạng data URL trong CSS; `dist/` và ZIP không commit vào nhánh nguồn. Nhánh `gh-pages` chỉ chứa bản web đã build và kiểm chứng.
+- Không commit bí mật, không đổi Secrets. Chỉ cấu hình GitHub Pages cho repo này theo yêu cầu triển khai web ngày 16/11/2026; không đổi cài đặt khác. Không force-push.
+- Không build hoặc phát triển APK. Không tự merge PR vào main; xuất bản bản web đã kiểm chứng lên gh-pages được người dùng cho phép.
 
 ## Kiểm chứng trước khi kết thúc
 npm ci (hoặc npm install) → npx tsc --noEmit → npx vitest run → npm run build

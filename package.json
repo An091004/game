@@ -10,23 +10,19 @@
     "dev": "vite --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "build": "vite build && node scripts/check-web-dist.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "start:web": "node scripts/serve-web.mjs dist",
+    "check:web": "node scripts/check-web-dist.mjs",
+    "package:web": "npm run build && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-web.ps1"
   },
   "devDependencies": {
-    "@capacitor/assets": "^4.0.0",
-    "@capacitor/cli": "^8.6.0",
     "@types/node": "^26.6.6",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
     "vitest": "^5.1.0"
   },
   "dependencies": {
-    "@capacitor/android": "^8.6.0",
-    "@capacitor/app": "^8.1.2",
-    "@capacitor/core": "^8.6.0",
-    "@capacitor/preferences": "^8.0.1",
-    "@capacitor/splash-screen": "^8.0.2",
     "@fontsource/be-vietnam-pro": "^5.3.0",
     "@fontsource/noto-serif": "^5.3.0"
   }

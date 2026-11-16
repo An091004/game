@@ -1,5 +1,7 @@
 # APK debug · Giai đoạn 3
 
+> TÀI LIỆU LƯU TRỮ: ngày 16/11/2026 người dùng chuyển sang web/GitHub Pages và không cần APK nữa. Workflow, toolchain và adapter Android đã được gỡ khỏi nhánh web. Các lệnh dưới đây chỉ mô tả giai đoạn cũ; hướng dẫn hiện hành ở [WEB.md](WEB.md).
+
 Ứng dụng: **Nhàn Vân**, package **com.nhanvan.game**, web đóng gói từ `dist/`. Game, font và plugin đã nằm trong app; không cấu hình server tải web từ xa.
 
 ## Tải bản cài thử

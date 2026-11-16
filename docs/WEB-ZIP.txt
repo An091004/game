@@ -1,0 +1,25 @@
+NHÀN VÂN — BẢN WEB
+
+Chơi online khi GitHub Pages đã triển khai thành công:
+https://an091004.github.io/game/
+
+Chạy bản ZIP trên máy:
+1. Giải nén toàn bộ ZIP vào một thư mục.
+2. Cần Node.js 24. Bản ZIP đã build sẵn, không cần npm install.
+3. Trên Windows mở Chay-Web.cmd; trên hệ điều hành khác chạy: node serve-web.mjs .
+4. Mở http://127.0.0.1:4173/ trong trình duyệt.
+5. Nhấn Ctrl+C trong cửa sổ chạy để dừng.
+
+Không mở index.html trực tiếp bằng file:// vì module JavaScript cần HTTP.
+Nếu cổng đang được dùng, đóng phiên chạy trước hoặc đặt biến PORT trước khi chạy.
+
+Đưa lên hosting tĩnh: chép index.html, icon.svg, .nojekyll, build-info.json,
+thư mục assets và licenses. Không cần đưa serve-web.mjs/Chay-Web.cmd lên hosting.
+
+Tiến trình lưu trong trình duyệt theo địa chỉ website. Trước khi đổi máy, trình duyệt
+hoặc chuyển giữa localhost và GitHub Pages, vào Thêm > Sao lưu hành trình để xuất
+chuỗi Base64; sang nơi mới nhập lại. Không xóa dữ liệu trình duyệt nếu chưa sao lưu.
+Không có đồng bộ tài khoản hoặc service worker; mở lại website cần mạng.
+Sau khi trang tải xong có thể chơi khi mất mạng, và lần mở sau vẫn tính bế quan.
+
+Font đi kèm bản build, giấy phép OFL trong licenses. Không có APK/SDK/Gradle.

@@ -12,6 +12,7 @@ Desktop.ini
 *.swo
 node_modules/
 dist/
+release/
 coverage/
 .cache/
 *.zip
