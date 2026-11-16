@@ -4,6 +4,7 @@ import { CONFIG, STAGES } from "../data/config";
 import { newState, resizePlots as ensurePlots } from "../state/create";
 import type { GameState } from "../state/types";
 import { num, clamp } from "../engine/math";
+import { parseCharacter } from "../state/character";
 export function normalize(input: unknown): GameState {
   if (
     !input ||
@@ -15,6 +16,7 @@ export function normalize(input: unknown): GameState {
     throw Error(TEXT.message135);
   const raw = input as Partial<GameState>;
   const s = newState();
+  s.character = parseCharacter(raw.character);
   s.createdAt = num(raw.createdAt, Date.now()) || Date.now();
   s.lastSeen = num(raw.lastSeen, Date.now()) || Date.now();
   s.lastSeenAt = num(raw.lastSeenAt, s.lastSeen);

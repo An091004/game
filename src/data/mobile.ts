@@ -24,7 +24,7 @@ export const MOBILE = {
   nativeFailed: "Chưa kết nối được điều khiển Android. Hãy mở lại trò chơi.",
   barsFailed: "Chưa đổi được màu biểu tượng hệ thống. Hãy mở lại trò chơi.",
 };
-export const BOTTOM_PAGES = ["practice", "travel", "cave", "more"];
+export const BOTTOM_PAGES = ["practice", "character", "travel", "cave", "more"];
 export const MORE_PAGES = [
   "manuals",
   "alchemy",

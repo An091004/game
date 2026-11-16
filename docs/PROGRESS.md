@@ -15,7 +15,7 @@
 | 2. SaveManager + ngoại tuyến + tests | Đã merge PR #2 |
 | 3. Capacitor + APK debug | PR #3 đang mở; đã triển khai, APK tạm hoãn theo yêu cầu ngày 10/11/2026 |
 | 4. Giao diện Android | Đã triển khai và kiểm chứng web; chờ duyệt PR và thử Android khi có APK |
-| 5. Nhân vật SVG | Chưa bắt đầu |
+| 5. Nhân vật SVG | Đã triển khai, kiểm chứng web; chờ duyệt PR nối tiếp #4 |
 | 6. Notifications/haptics/save file | Chưa bắt đầu |
 | 7. Ký và phát hành APK | Chưa bắt đầu |
 | 8. Đồng bộ (tùy chọn) | Chưa bắt đầu |
@@ -45,10 +45,10 @@
 
 ## Việc tiếp theo
 
-1. Chủ repo duyệt PR #3 và PR giai đoạn 4. PR giai đoạn 4 đặt base vào nhánh giai đoạn 3 để diff chỉ chứa giao diện; sau khi merge #3, chuyển base PR giai đoạn 4 về main và kiểm tra lại diff trước khi merge. Agent chưa merge các PR này.
+1. Chủ repo duyệt PR #3, #4 và PR giai đoạn 5 theo thứ tự. PR #4 đặt base vào nhánh giai đoạn 3; PR giai đoạn 5 đặt base vào nhánh giai đoạn 4 để diff chỉ chứa phần mới. Sau khi PR trước được merge, chuyển base PR kế về main và kiểm tra lại diff trước khi merge. Agent chưa merge các PR này.
 2. APK tiếp tục tạm hoãn. Khi sẵn sàng, xử lý việc Actions không khởi chạy và chạy thủ công workflow đúng nhánh; theo docs/ANDROID-DEBUG.md. Không cần đổi billing/Secrets/cài đặt repo trong giai đoạn 4.
 3. Giữ bản xuất Base64 trước khi cài đè/đổi nơi chơi; thử Back, safe area và giao diện sáng/tối trên điện thoại khi có APK.
-4. Bước phát triển tiếp theo là giai đoạn 5: nhân vật SVG và tab Nhân vật, chỉ triển khai khi người dùng yêu cầu.
+4. Bước phát triển tiếp theo là giai đoạn 6: thông báo, haptics, xuất/nhập save bằng file, chỉ triển khai khi người dùng yêu cầu.
 
 ## Giai đoạn 3
 
@@ -64,7 +64,7 @@
 
 ## Giới hạn
 
-Hai ô cùng hỏng sẽ dừng khởi tạo, chưa có màn nhập file phục hồi riêng. Callback lưu native không bảo đảm hoàn tất nếu hệ điều hành cưỡng bức dừng ngay lập tức. Kiểm tra adapter giả lập không thay thế thử force-stop/cài đè/Auto Backup trên Android. Native/web khác origin không tự chia sẻ save. CRC32 không phải chữ ký chống sửa dữ liệu. Nhân vật và hiệu ứng rung vẫn chờ đúng giai đoạn tương ứng.
+Hai ô cùng hỏng sẽ dừng khởi tạo, chưa có màn nhập file phục hồi riêng. Callback lưu native không bảo đảm hoàn tất nếu hệ điều hành cưỡng bức dừng ngay lập tức. Kiểm tra adapter giả lập không thay thế thử force-stop/cài đè/Auto Backup trên Android. Native/web khác origin không tự chia sẻ save. CRC32 không phải chữ ký chống sửa dữ liệu. Hiệu ứng rung vẫn chờ giai đoạn 6.
 
 ## Giai đoạn 4
 
@@ -78,3 +78,14 @@ Hai ô cùng hỏng sẽ dừng khởi tạo, chưa có màn nhập file phục 
 - `android-debug.yml` chỉ chạy tay để hoãn APK; không đổi Secrets, billing hoặc cài đặt GitHub. CI web vẫn chạy theo push/PR.
 - Kiểm chứng: 108/108 Vitest trong 6 file, typecheck/build đạt; 10 nhóm kiểm tra Edge 157.0.4341.42 đạt, gồm 320/390/844/850/1280px, cỡ chữ 120%, modal chồng nhau, save cũ, âm thanh và tiết kiệm pin. Chi tiết và kết quả chuỗi lệnh cuối ở TESTING.md.
 - Chưa build hay thử APK. Safe area mô phỏng và adapter Back/SystemBars không thay thế kiểm thử WebView/điện thoại thật; đặc biệt cần kiểm tra màu thanh hệ thống ở WebView cũ.
+
+## Giai đoạn 5
+
+- Ngày 16/11/2026 người dùng yêu cầu tiếp tục bước tiếp theo; giữ nguyên việc hoãn APK. Kiểm tra GitHub trước khi làm: PR #3 và #4 vẫn mở, chưa merge. Nhánh `codex/giai-doan-5-character` nối từ #4 tại `cbfee70`; PR mới chỉ chứa nhân vật.
+- SVG tự vẽ nhiều lớp: tóc, đầu, áo, đai, tay/chân, đá, núi, trăng, lò/khói và hào quang. Không thêm ảnh/font/thư viện bên ngoài hoặc dependency. Mọi chuỗi và lựa chọn ngoại hình ở `src/data/character.ts`.
+- Màn tạo nhân vật lần đầu và sửa tại tab Nhân vật: tên tiếng Việt 1–24 ký tự, nam/nữ/trung tính, ba kiểu tóc, năm màu áo, xem trước. Hủy giữ bản lưu cũ. Profile tùy chọn trong saveVersion 2; save v1/v2 chưa có profile giữ toàn bộ tiến trình; profile hỏng được SaveManager xử lý như dữ liệu hỏng, không thay bằng save rỗng.
+- Menu dưới có đúng năm mục, bổ sung Nhân vật. Hình ngồi thiền nằm trong hero dưới trăng; Du ngoạn đi bộ, Luyện đan ngồi cạnh lò có khói, đột phá phát ánh sáng/sấm nhẹ rồi trở lại thiền. Hào quang theo 10 đại cảnh giới, độ sáng theo % linh khí; kim đan từ Kết Đan, tiểu nhân từ Nguyên Anh, các vòng tăng dần ở cảnh giới cao.
+- `renderCharacter(state, options?)` là lớp hình ảnh chỉ đọc. Tick chỉ đổi mức sáng, không thay SVG và khởi động lại hoạt ảnh. Hoạt ảnh CSS dừng khi ở nền, tiết kiệm pin hoặc reduced-motion; hình trong trang ẩn cũng tạm dừng.
+- Tab Nhân vật lấy cảnh giới/thọ nguyên/tốc độ/tài nguyên/tâm pháp/tỉ lệ đột phá từ công thức hiện có. Tổng thời gian là `max(0, lastSeenAt - createdAt)`, có chú thích gồm thời gian bế quan; không thêm bộ đếm hoặc logic tích lũy. Pháp bảo/Linh thú/Đạo lữ chỉ hiện khóa.
+- Kiểm chứng: npm ci, typecheck, 141/141 Vitest (7 file), build web 63 modules và actionlint đạt. 10 nhóm kiểm tra nhân vật trên Edge 157.0.4341.60 đạt: tạo/sửa/hủy, lưu/mở lại/xuất nhập, save v1, modal chồng, 320–1280px/chữ 120%, tư thế, hào quang không thay SVG giữa tick, reduced-motion/nền/pin, đột phá. Chi tiết ở TESTING.md.
+- Không build Android, không chạy lại APK, không merge PR hoặc đổi Secrets/cài đặt. Còn 4 moderate trong công cụ dev như trước; chưa đo hiệu năng WebView, dung lượng APK hoặc thử native trên máy thật. Giai đoạn 6 chưa triển khai.

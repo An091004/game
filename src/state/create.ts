@@ -7,6 +7,7 @@ export function newState(): GameState {
     saveVersion: 2,
     lastSeenAt: Date.now(),
     createdAt: Date.now(),
+    character: null,
     lastSeen: Date.now(),
     stage: 0,
     qi: 0,

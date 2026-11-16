@@ -1,0 +1,87 @@
+import type { CharacterProfile } from "../state/types";
+
+export const CHARACTER = {
+  maxNameLength: 24,
+  defaultProfile: {
+    name: "Vân Du",
+    gender: "neutral",
+    hair: "knot",
+    robe: "jade",
+  } satisfies CharacterProfile,
+  genders: [
+    { id: "male", label: "Nam" },
+    { id: "female", label: "Nữ" },
+    { id: "neutral", label: "Trung tính" },
+  ],
+  hairstyles: [
+    { id: "knot", label: "Búi thanh phong" },
+    { id: "long", label: "Tóc buông mây" },
+    { id: "short", label: "Tóc ngắn" },
+  ],
+  robes: [
+    { id: "jade", label: "Trúc xanh", color: "#557e70", shade: "#294b43" },
+    { id: "ink", label: "Mực núi", color: "#536478", shade: "#263544" },
+    { id: "moon", label: "Nguyệt bạch", color: "#d6d5bf", shade: "#8e9f92" },
+    { id: "plum", label: "Mai tím", color: "#967b91", shade: "#574455" },
+    { id: "sand", label: "Cát vàng", color: "#b29a70", shade: "#766044" },
+  ],
+  burstMs: 1800,
+};
+export const CHARACTER_TEXT = {
+  title: "Người giữa mây ngàn",
+  eyebrow: "MỘT THÂN NHÀN TỰ TẠI",
+  intro:
+    "Không cần giống ai. Một dáng áo, một tên gọi, thong thả bước trên đạo lộ của mình.",
+  createTitle: "Gặp người dưới trăng",
+  createIntro:
+    "Chọn một tên gọi và dáng hình. Sau này có thể đổi bất cứ lúc nào trong mục Nhân vật.",
+  editTitle: "Đổi dáng giữa mây",
+  editIntro: "Áo mới hay tóc mới đều không đổi hành trình đã qua.",
+  name: "Tên nhân vật",
+  gender: "Giới tính",
+  hair: "Kiểu tóc",
+  robe: "Màu áo",
+  nameHint: "Từ 1 đến 24 ký tự; có thể dùng tiếng Việt.",
+  invalid: "Hãy nhập tên từ 1 đến 24 ký tự và chọn ngoại hình hợp lệ.",
+  start: "Bắt đầu hành trình",
+  save: "Lưu dáng hình",
+  cancel: "Để sau",
+  close: "Đóng",
+  customize: "Đổi tên và ngoại hình",
+  saved: "Dáng hình đã được ghi nhớ.",
+  defaultHint:
+    "Đang dùng dáng hình mặc định. Ngươi có thể đặt tên và đổi ngoại hình bất cứ lúc nào.",
+  realm: "Cảnh giới",
+  lifespan: "Thọ nguyên",
+  rate: "Hấp thu tự nhiên",
+  qi: "Linh khí hiện có",
+  stones: "Linh thạch",
+  multiplier: "Tâm pháp cộng hưởng",
+  success: "Đột phá thành công",
+  time: "Tổng thời gian tu hành",
+  timeHint:
+    "Tính từ ngày bắt đầu, gồm cả thời gian bế quan; không phải số giờ mở trò chơi.",
+  days: (d: number, h: number, m: number) => `${d} ngày ${h} giờ ${m} phút`,
+  futureTitle: "Duyên chưa tới",
+  futureHint: "Những ô này chưa có hệ thống, chưa cộng chỉ số hay phần thưởng.",
+  locked: ["Pháp bảo", "Linh thú", "Đạo lữ"],
+  lockedLabel: "Chưa mở",
+  activities: {
+    practice: "Tĩnh tọa dưới trăng",
+    travel: "Dạo bước qua núi",
+    alchemy: "Canh lò bên suối",
+    breakthrough: "Linh quang đột phá",
+  },
+  aura: [
+    "Quầng khí trắng",
+    "Vòng ngọc Trúc Cơ",
+    "Kim đan trong đan điền",
+    "Nguyên Anh trên đỉnh đầu",
+    "Thần quang",
+    "Hư không linh hoàn",
+    "Hợp nhất linh quang",
+    "Đại Thừa quang luân",
+    "Lôi quang Độ Kiếp",
+    "Vân quang Phi Thăng",
+  ],
+};

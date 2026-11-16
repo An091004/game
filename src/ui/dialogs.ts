@@ -5,7 +5,7 @@ type Dialog = {
 };
 const stack: Dialog[] = [];
 const focusable =
-  'button:not(:disabled), textarea:not(:disabled), input:not(:disabled), [tabindex="0"]';
+  'button:not(:disabled), textarea:not(:disabled), input:not(:disabled):not([type="radio"]), input[type="radio"]:checked, select:not(:disabled), [tabindex="0"]';
 function targets(element: HTMLElement) {
   return Array.from(element.querySelectorAll<HTMLElement>(focusable)).filter(
     (e) => e.getClientRects().length > 0,
@@ -34,6 +34,7 @@ export function closeDialog(element: HTMLElement) {
     const restore = entry.restore;
     if (
       restore?.isConnected &&
+      restore !== document.body &&
       (!top || top.contains(restore)) &&
       restore.getClientRects().length
     )

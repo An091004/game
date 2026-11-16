@@ -1,0 +1,433 @@
+.character-scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.character-body {
+  transform-box: view-box;
+}
+.character-breath {
+  transform-origin: 0 30px;
+  animation: character-breathe 5s ease-in-out infinite;
+}
+.character-aura {
+  opacity: var(--aura-opacity, 0.4);
+  transition: opacity 1s linear;
+}
+.character-core {
+  opacity: var(--aura-opacity, 0.6);
+}
+.character-qi {
+  transform-origin: 160px 197px;
+  animation: character-qi 9s linear infinite;
+}
+.character-flow {
+  transform-origin: 160px 207px;
+  animation: character-flow 9s linear infinite;
+}
+.character-spirit {
+  opacity: var(--aura-opacity, 0.6);
+  animation: character-spirit 5s ease-in-out infinite;
+}
+.character-leg {
+  transform-origin: 0 35px;
+  animation: character-step 1.8s ease-in-out infinite alternate;
+}
+.character-leg-right {
+  animation-delay: -0.9s;
+}
+[data-activity="travel"] .character-breath {
+  animation: character-walk 1.8s ease-in-out infinite;
+}
+.character-smoke {
+  animation: character-smoke 6s ease-in-out infinite;
+}
+.character-burst {
+  transform-origin: 160px 180px;
+  animation: character-burst 1.8s ease-out both;
+}
+@keyframes character-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-2px) scaleY(1.015);
+  }
+}
+@keyframes character-qi {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes character-flow {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes character-spirit {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes character-step {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(8deg);
+  }
+}
+@keyframes character-walk {
+  0%,
+  50%,
+  100% {
+    transform: translateY(0);
+  }
+  25%,
+  75% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes character-smoke {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateY(-8px);
+  }
+}
+@keyframes character-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  35% {
+    opacity: 0.65;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+html[data-foreground="false"] .character-scene *,
+.content-page[hidden] .character-scene *,
+.overlay[hidden] .character-scene * {
+  animation-play-state: paused !important;
+}
+html[data-battery="true"] .character-scene *,
+html[data-foreground="false"] .character-scene * {
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .character-scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Nhân vật nằm trong hero, giữ vùng chữ tách khỏi bóng dáng dưới trăng. */
+.hero {
+  min-height: 310px;
+}
+.hero-copy {
+  max-width: 56%;
+  padding-right: 0;
+}
+.hero h1 {
+  font-size: 1.6rem;
+}
+.hero-kicker {
+  font-size: 0.57rem;
+}
+.hero-character {
+  width: 47%;
+  position: absolute;
+  right: 1%;
+  bottom: -5px;
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-character .character-scenery {
+  display: none;
+}
+.hero-character .character-scene {
+  overflow: hidden;
+}
+.hero-stamp {
+  z-index: 3;
+}
+.character-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+  overflow: hidden;
+}
+.character-portrait {
+  max-width: 370px;
+  width: 100%;
+  margin: auto;
+}
+.character-identity h2 {
+  margin: 0 0 6px;
+  font:
+    600 1.65rem "Noto Serif",
+    serif;
+  color: var(--gold);
+  overflow-wrap: anywhere;
+}
+.character-identity p {
+  color: var(--muted);
+}
+.character-identity .secondary-button {
+  width: 100%;
+  white-space: normal;
+}
+.character-aura-caption {
+  font-size: 0.74rem;
+}
+.character-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 20px 0 8px;
+  padding: 6px 20px;
+  gap: 0 20px;
+}
+.character-stats > div {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--edge);
+  min-width: 0;
+}
+.character-stats dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.character-stats dd {
+  margin: 4px 0 0;
+  color: var(--gold);
+  overflow-wrap: anywhere;
+}
+.character-section-title {
+  font:
+    600 1.1rem "Noto Serif",
+    serif;
+  margin-top: 28px;
+}
+.character-locked {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.character-locked > div {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  text-align: center;
+  gap: 4px;
+  padding: 20px 7px;
+  opacity: 0.58;
+}
+.character-locked svg {
+  width: 24px;
+  height: 24px;
+  color: var(--gold);
+}
+.character-locked small {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+.activity-character {
+  width: 100%;
+  margin-bottom: 20px;
+  overflow: hidden;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    var(--panel-hover),
+    var(--panel)
+  );
+}
+.activity-character .character-scene {
+  max-width: 300px;
+  max-height: 280px;
+  margin: auto;
+}
+.storm-character {
+  max-width: 200px;
+  margin: -10px auto;
+}
+.storm .storm-symbol {
+  display: none;
+}
+.storm.modal {
+  overflow-y: auto;
+}
+.character-editor h2 {
+  padding-right: 35px;
+}
+.character-editor-preview {
+  max-width: 150px;
+  margin: -16px auto -8px;
+}
+.character-editor label,
+.character-editor legend {
+  color: var(--soft);
+  font-size: 0.8rem;
+}
+.character-editor input[type="text"] {
+  width: 100%;
+  min-height: 44px;
+  margin: 5px 0;
+  border: 1px solid var(--edge-strong);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--bg2);
+  color: var(--ink);
+  font: inherit;
+}
+.character-editor input:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+#characterNameHint {
+  display: block;
+  color: var(--muted);
+  font-size: 0.67rem;
+}
+.character-choices {
+  border: 0;
+  padding: 0;
+  margin: 17px 0;
+  min-width: 0;
+}
+.character-choices legend {
+  padding: 0 0 7px;
+}
+.character-choices > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.character-choices label {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+}
+.character-choices input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.character-choices span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  font-size: 0.72rem;
+  pointer-events: none;
+}
+.character-choices input:checked + span {
+  color: var(--gold-2);
+  border-color: var(--gold);
+  background: var(--panel-hover);
+}
+.character-choices input:focus-visible + span {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+.character-choices i {
+  width: 15px;
+  height: 15px;
+  background: var(--robe-color);
+  border-radius: 50%;
+  border: 1px solid #ffffff44;
+  flex-shrink: 0;
+}
+.character-error {
+  color: var(--danger);
+  font-size: 0.75rem;
+}
+@media (max-width: 850px) {
+  .bottom-navigation {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .bottom-navigation .nav-item {
+    font-size: 0.62rem;
+  }
+  .bottom-navigation .nav-item .lock-mark {
+    right: 3px;
+  }
+}
+@media (max-width: 600px) {
+  .hero {
+    display: block;
+    min-height: 420px;
+    padding: 22px 20px;
+  }
+  .hero-copy {
+    max-width: 100%;
+    padding-right: 28px;
+  }
+  .hero h1 {
+    font-size: 1.45rem;
+  }
+  .hero p {
+    max-width: 100%;
+  }
+  .hero-character {
+    width: 230px;
+    height: 230px;
+    right: -4px;
+    bottom: -8px;
+  }
+  .hero .landscape {
+    height: 64%;
+    top: auto;
+    bottom: 0;
+  }
+  .character-card {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px;
+  }
+  .character-portrait {
+    max-width: 280px;
+  }
+  .character-identity {
+    text-align: center;
+  }
+  .character-stats {
+    padding: 5px 16px;
+    gap: 0 14px;
+  }
+}
+@media (max-width: 360px) {
+  .hero {
+    min-height: 460px;
+  }
+  .character-locked {
+    grid-template-columns: 1fr;
+  }
+  .character-locked > div {
+    grid-template-columns: 24px 1fr auto;
+    text-align: left;
+    padding: 14px;
+  }
+}

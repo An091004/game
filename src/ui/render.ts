@@ -11,6 +11,7 @@ type Dependencies = ReturnType<typeof createProgression> & {
   state: () => GameState;
   activePage: () => string;
   soundOn: () => boolean;
+  renderCharacter: () => void;
   stageName: (idx?: number) => string;
   minorName: (idx?: number) => string;
 };
@@ -328,6 +329,7 @@ export function createRenderer(deps: Dependencies) {
     renderSettings(state);
     renderShell();
     renderPractice();
+    deps.renderCharacter();
     if (deps.activePage() === "manuals") renderManuals();
     if (deps.activePage() === "cave") renderCave();
     if (deps.activePage() === "alchemy") renderAlchemy();
