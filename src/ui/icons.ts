@@ -1,5 +1,6 @@
 // SVG nội bộ: cùng nét mảnh, kế thừa màu của giao diện, không tải tài nguyên ngoài.
 const paths: Record<string, string> = {
+  character: '<circle cx="12" cy="6" r="3"/><path d="M5 21v-5a7 7 0 0 1 14 0v5M8 14l4 4 4-4M8 21h8"/>',
   practice:
     '<circle cx="12" cy="12" r="9"/><path d="M12 3a4.5 4.5 0 0 1 0 9 4.5 4.5 0 0 0 0 9"/><circle cx="12" cy="7.5" r=".8"/><circle cx="12" cy="16.5" r=".8"/>',
   manuals:

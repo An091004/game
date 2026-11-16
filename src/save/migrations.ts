@@ -3,6 +3,7 @@ import { SAVE_TEXT } from "../data/save";
 import { newState } from "../state/create";
 import type { GameState } from "../state/types";
 import { normalize } from "./normalize";
+import { parseCharacter } from "../state/character";
 
 export class FutureSaveError extends Error {
   constructor() {
@@ -27,6 +28,7 @@ function list(value: unknown): unknown[] {
 }
 /** Xác minh trước khi chuẩn hóa: không biến dữ liệu thiếu thành state mặc định. */
 function validate(raw: Record<string, unknown>) {
+  parseCharacter(raw.character);
   if (raw.version !== 1) throw Error(SAVE_TEXT.invalid);
   for (const key of [
     "createdAt",

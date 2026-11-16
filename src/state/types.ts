@@ -13,11 +13,18 @@ export interface Travel {
   reward: string;
   at: number;
 }
+export interface CharacterProfile {
+  name: string;
+  gender: "male" | "female" | "neutral";
+  hair: "knot" | "long" | "short";
+  robe: "jade" | "ink" | "moon" | "plum" | "sand";
+}
 export interface GameState {
   version: 1;
   saveVersion: 2;
   lastSeenAt: number;
   createdAt: number;
+  character: CharacterProfile | null;
   lastSeen: number;
   stage: number;
   qi: number;

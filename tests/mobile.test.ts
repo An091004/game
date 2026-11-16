@@ -92,15 +92,18 @@ describe("Back Android", () => {
       expect(h.deps.exit).not.toHaveBeenCalled();
     },
   );
-  it("tab chính quay về Tu luyện, cần hai Back mới để thoát", async () => {
-    const h = harness();
-    h.page("travel");
-    await h.back.press();
-    await h.back.press();
-    expect(h.deps.exit).not.toHaveBeenCalled();
-    await h.back.press();
-    expect(h.deps.exit).toHaveBeenCalledOnce();
-  });
+  it.each(["travel", "character", "cave"])(
+    "tab %s quay về Tu luyện, cần hai Back mới để thoát",
+    async (page) => {
+      const h = harness();
+      h.page(page);
+      await h.back.press();
+      await h.back.press();
+      expect(h.deps.exit).not.toHaveBeenCalled();
+      await h.back.press();
+      expect(h.deps.exit).toHaveBeenCalledOnce();
+    },
+  );
   it("Back quá 2 giây chỉ nhắc lại", async () => {
     const h = harness();
     await h.back.press();

@@ -35,12 +35,13 @@ Nếu triển khai website, phục vụ **nội dung dist/** bằng hosting tĩn
 - `src/engine/`: công thức tu luyện, chi phí và tính linh khí theo thời gian.
 - `src/save/`: SaveManager hai ô, checksum CRC32, migration v1 → v2 và adapter Preferences/localStorage.
 - `src/ui/`: điều phối thao tác, render, định dạng và hiệu ứng nền.
+- `src/character/`: lớp SVG nhân vật, tư thế/hào quang và hoạt ảnh chỉ đọc state.
 - `src/main.ts`, `src/styles.css`, `index.html`: điểm vào, giao diện và khung HTML.
 - `tests/`: đối chiếu với HTML v1 và kiểm tra bảo vệ save.
 - `legacy/index.html`: bản gốc bất biến dùng làm mốc đối chiếu; không được đưa vào dist.
 - `docs/PLAN.md`, `docs/PROGRESS.md`: kế hoạch đầy đủ và trạng thái từng giai đoạn.
 
-Module nhân vật sẽ thêm ở giai đoạn 5. Các thao tác game hiện vẫn được điều phối trong `src/ui/game.ts`; những giai đoạn tiếp theo tách tiếp tại nơi có thay đổi, tránh thay toàn bộ logic một lượt.
+Nhân vật đi qua hàm `renderCharacter(state, options?)`; có thể thay SVG bằng ảnh theo lớp về sau. Các thao tác game hiện vẫn được điều phối trong `src/ui/game.ts`; ngoại hình không cộng chỉ số hay thay đổi công thức game.
 
 ## Bản lưu và chuyển từ web cũ
 
@@ -60,7 +61,7 @@ Nếu gặp cảnh báo không ghi được, hãy xuất giữ tiến độ đan
 
 ## Android
 
-**Build APK đang tạm hoãn theo yêu cầu ngày 10/11/2026.** Giai đoạn 4 tiếp tục làm và kiểm tra giao diện trên web; workflow APK chỉ còn `workflow_dispatch`, không chạy khi push. CI web vẫn giữ nguyên.
+**Build APK đang tạm hoãn theo yêu cầu ngày 10/11/2026.** Giai đoạn 4–5 tiếp tục làm và kiểm tra giao diện trên web; workflow APK chỉ còn `workflow_dispatch`, không chạy khi push. CI web vẫn giữ nguyên.
 
 Giai đoạn 3 bổ sung cấu hình Capacitor cho **Nhàn Vân** (`com.nhanvan.game`) và workflow **APK debug Nhàn Vân**. Actions sinh Android, icon/splash từ SVG, cấu hình Auto Backup cho Preferences và build APK debug. Artifact `NhanVan-debug.apk` giữ 14 ngày, chỉ xuất hiện khi job build thành công.
 
@@ -70,11 +71,21 @@ Chủ repo duyệt và merge PR giai đoạn 3. Yêu cầu merge trong chat trư
 
 ## Giao diện di động
 
-Màn hình tối đa 850px có bốn mục dưới đáy: Tu luyện, Du ngoạn, Động phủ, Thêm. Công pháp, Luyện đan, Nhật ký, Thành tựu, Cài đặt và Sao lưu nằm trong Thêm. Màn hình lớn giữ thanh bên. Icon SVG và font tiếng Việt đều đóng gói sẵn; không tải từ CDN. Tab Nhân vật để giai đoạn 5.
+Màn hình tối đa 850px có năm mục dưới đáy: Tu luyện, Nhân vật, Du ngoạn, Động phủ, Thêm. Công pháp, Luyện đan, Nhật ký, Thành tựu, Cài đặt và Sao lưu nằm trong Thêm. Màn hình lớn giữ thanh bên. Icon SVG và font tiếng Việt đều đóng gói sẵn; không tải từ CDN.
 
 Cài đặt sáng/tối, cỡ chữ 90–120%, nhạc, quyền rung và tiết kiệm pin lưu cùng tiến trình. Save cũ được thêm giá trị mặc định, giữ `saveVersion: 2`. Nhạc chỉ bắt đầu sau một thao tác, dừng khi xuống nền; quay lại chạm để phát tiếp. Tiết kiệm pin tắt hiệu ứng trang trí, không ngừng tu luyện. Lựa chọn rung được lưu trước; hiệu ứng haptics thực tế thuộc giai đoạn 6.
 
 Back Android đóng hộp thoại trước, quay từ màn phụ về Thêm rồi Tu luyện. Tại Tu luyện, bấm hai lần trong 2 giây để thoát; game chờ lưu thành công trước khi gọi thoát. Các adapter native đã được kiểm tra bằng mô phỏng, cần thử lại trên APK khi tiếp tục build.
+
+## Nhân vật
+
+Lần đầu chưa có nhân vật, game hiện màn chọn tên (1–24 ký tự), giới tính nam/nữ/trung tính, ba kiểu tóc và năm màu áo. Có xem trước; chọn **Bắt đầu hành trình** để lưu, hoặc **Để sau** để chơi với hình mặc định. Có thể đổi lại tại **Nhân vật → Đổi tên và ngoại hình**. Bản nháp không ghi vào tiến trình nếu đóng bằng nút hủy/Escape/Back. Nếu bỏ qua, game sẽ mời tạo lại lần mở sau.
+
+Nhân vật ngồi thiền trên đá trong hero, đi bộ ở Du ngoạn, ngồi cạnh lò ở Luyện đan và phát linh quang khi đột phá. Hào quang đổi theo cảnh giới và % linh khí; từ Kết Đan có kim đan, từ Nguyên Anh có tiểu nhân trên đầu. Hoạt ảnh dừng khi ở nền, tiết kiệm pin hoặc giảm chuyển động của hệ thống.
+
+Tab Nhân vật hiển thị các chỉ số hiện có; tổng thời gian tính từ `createdAt` tới `lastSeenAt`, gồm cả thời gian bế quan, không phải số giờ mở app hay số giờ được cộng linh khí. Pháp bảo/Linh thú/Đạo lữ chỉ là ô khóa, chưa có hệ thống hoặc thưởng ẩn.
+
+Ngoại hình nằm trong trường tùy chọn `character`, cùng saveVersion 2. Save v1/v2 cũ thiếu trường này vẫn giữ tiến trình và dùng hình mặc định. Profile có dữ liệu sai kiểu/ngoài lựa chọn bị từ chối để SaveManager phục hồi backup hoặc khóa ghi; không âm thầm đặt lại save. Xuất/nhập Base64 giữ cả nhân vật.
 
 ## Kiểm thử và giấy phép
 

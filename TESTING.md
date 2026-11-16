@@ -1,3 +1,26 @@
+# Kiểm chứng giai đoạn 5
+
+Ngày 16/11/2026; Windows, Node 24.22.1, npm 12.2.1. Chỉ build web, APK vẫn tạm hoãn.
+
+| Lệnh | Kết quả thực tế |
+| --- | --- |
+| npm ci | Đạt; 192 packages, audit 193, còn 4 moderate trong cây dev như trước |
+| npx tsc --noEmit | Đạt |
+| npx vitest run | Đạt 141/141, 7 file |
+| npm run build | Đạt; 63 modules |
+| actionlint 1.7.12 | Đạt hai workflow; không ShellCheck/Pyflakes |
+| git diff --check | Đạt |
+
+33 test bổ sung so với giai đoạn 4: profile v1/v2 thiếu trường giữ tiến trình, tên NFC/giới hạn 24 ký tự, từ chối dữ liệu sai, round-trip nhân vật, profile lỗi phục hồi backup hoặc khóa ghi; 45 tổ hợp ngoại hình, escape tên trong SVG, đủ 10 cảnh giới, tỉ lệ hào quang, tư thế và id SVG riêng, bộ đếm thời gian chỉ suy ra từ state; Back từ Nhân vật/Động phủ về Tu luyện. Không thay test công thức/cân bằng cũ.
+
+Edge headless 157.0.4341.60 trên dist, profile thử riêng: 10 nhóm kiểm tra nhân vật đạt. Tạo lần đầu với tên rỗng không ghi; tạo hợp lệ rồi mở lại giữ profile; hủy bản nháp không ghi; tên chứa HTML chỉ là văn bản; xuất/nhập Base64 giữ nhân vật. Save v1 vẫn giữ cảnh giới/linh khí và hai modal tạo nhân vật/bế quan đóng lần lượt, giữ inert và focus.
+
+Mười màn ở 320/390/844/850px, chín màn sidebar ở 1280px với chữ 120% không tràn ngang, nút bấm tối thiểu 44px; editor giữ vòng Tab. Nguyên Anh có kim đan/tiểu nhân, tick đổi mức sáng mà giữ node SVG. Du ngoạn có bước chân, Luyện đan có lò/khói, không trùng id SVG. Hoạt ảnh dừng khi xuống nền, tiết kiệm pin và reduced-motion; chạy lại đúng điều kiện. Giữ đạo ấn qua đại cảnh giới thành công, linh quang hiện rồi trở về thiền. Không lỗi JavaScript hoặc tải tài nguyên ngoài origin.
+
+Đã xem ảnh Tu luyện, Nhân vật, tạo nhân vật và Luyện đan. Ảnh và script kiểm tra trình duyệt nằm ở .task/ bị Git bỏ qua. Chưa đo mức pin/FPS/khởi động trên điện thoại thật; kiểm tra computed style và headless không thay thế nghiệm thu Android. Workflow APK và các dependency giữ nguyên. CI GitHub thực tế được ghi trong PR sau push; không coi lỗi khóa billing là test đã chạy.
+
+Chạy lại 8 nhóm save của giai đoạn 2 và 10 nhóm giao diện/cài đặt của giai đoạn 4 đều đạt trên bản dist mới. Fixture chỉ được điều chỉnh để đóng màn tạo nhân vật mới và chấp nhận năm mục menu. Các kiểm tra bảo vệ save hỏng/backup/ngoại tuyến, âm thanh, safe area và focus cũ vẫn chạy đủ.
+
 # Kiểm chứng giai đoạn 4
 
 Ngày 10/11/2026; Windows, Node 24.22.1, npm 12.2.1. Build APK được tạm hoãn theo yêu cầu người dùng; không chạy cap add, Gradle hay Android SDK.

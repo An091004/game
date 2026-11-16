@@ -1,3 +1,5 @@
+import { setupCharacter } from "./character";
+import { CHARACTER_TEXT } from "../data/character";
 import { MOBILE } from "../data/mobile";
 import { setupMobile } from "./mobile";
 import { openDialog, closeDialog, closeTopDialog } from "./dialogs";
@@ -51,6 +53,17 @@ export async function startGame() {
     holdFrame = 0;
   let foreground = !document.hidden;
   setupMobile();
+  document.documentElement.dataset.foreground = String(foreground);
+  const character = setupCharacter(
+    () => state,
+    (profile) => {
+      state.character = profile;
+      renderAll();
+      void persist(false).then((saved) =>
+        toast(saved ? CHARACTER_TEXT.saved : SAVE_TEXT.writeFailed),
+      );
+    },
+  );
   const music = createMusic(
     () => state.settings.music,
     () => foreground,
@@ -105,6 +118,7 @@ export async function startGame() {
     state: () => state,
     activePage: () => activePage,
     soundOn: () => state.settings.music,
+    renderCharacter: () => character.render(activePage),
     stageName,
     minorName,
   });
@@ -244,6 +258,7 @@ export async function startGame() {
         pendingGrand = null;
         endHold();
       });
+      character.render(activePage);
       holdValue = 0;
       $("holdButton").style.setProperty("--hold", "0%");
       $("holdLabel").textContent = TEXT.message023;
@@ -266,6 +281,7 @@ export async function startGame() {
     record(TEXT.message024(stageName(), gift));
     if (grand) record(TEXT.message025(STAGES[next].realm.feature));
     animateRise();
+    character.breakthrough();
     toast(TEXT.message026(stageName(), gift));
     if (grand) {
       closeDialog($("stormOverlay"));
@@ -620,6 +636,10 @@ export async function startGame() {
       case "travel":
         travel();
         break;
+      case "edit-character":
+        back.reset();
+        character.openEditor();
+        break;
       case "open-backup":
         openBackup();
         break;
@@ -696,6 +716,7 @@ export async function startGame() {
 
   const pause = () => {
     foreground = false;
+    document.documentElement.dataset.foreground = "false";
     back.reset();
     ambience.refresh();
     advanceRealtime();
@@ -706,6 +727,7 @@ export async function startGame() {
   };
   const resume = () => {
     foreground = true;
+    document.documentElement.dataset.foreground = "true";
     back.reset();
     ambience.refresh();
     advanceRealtime(true);
@@ -735,4 +757,5 @@ export async function startGame() {
     toast(MOBILE.nativeFailed),
   );
   renderAll();
+  if (!state.character) character.openEditor(true);
 }
