@@ -694,6 +694,7 @@ CONFIG.realms.forEach((r, ri) => {
 export const NAV = [
   { id: "practice", icon: "☯", label: "Tu luyện", unlock: 0 },
   { id: "character", icon: "", label: "Nhân vật", unlock: 0 },
+  { id: "world", icon: "", label: "Sơn Hải", unlock: 0 },
   { id: "manuals", icon: "📜", label: "Công pháp", unlock: 1 },
   { id: "travel", icon: "☁", label: "Du ngoạn", unlock: 2 },
   { id: "cave", icon: "⌂", label: "Động phủ", unlock: 3 },

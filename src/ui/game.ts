@@ -1,4 +1,5 @@
 import { setupCharacter } from "./character";
+import { setupWorld } from "./world";
 import { CHARACTER_TEXT } from "../data/character";
 import { MOBILE } from "../data/mobile";
 import { setupMobile } from "./mobile";
@@ -50,6 +51,7 @@ export async function startGame() {
     holdStart = 0,
     holdFrame = 0;
   let foreground = !document.hidden;
+  const world = setupWorld(() => state);
   setupMobile();
   document.documentElement.dataset.foreground = String(foreground);
   const character = setupCharacter(
@@ -100,6 +102,7 @@ export async function startGame() {
     activePage: () => activePage,
     soundOn: () => state.settings.music,
     renderCharacter: () => character.render(activePage),
+    renderWorld: () => world.render(activePage),
     stageName,
     minorName,
   });
@@ -733,5 +736,6 @@ export async function startGame() {
   }, 1000);
 
   renderAll();
-  if (!state.character) character.openEditor(true);
+  if (location.hash === "#world") changePage("world");
+  if (!state.character && location.hash !== "#world") character.openEditor(true);
 }

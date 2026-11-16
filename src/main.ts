@@ -16,6 +16,7 @@ import "@fontsource/be-vietnam-pro/latin-600.css";
 import "@fontsource/be-vietnam-pro/latin-700.css";
 import "./styles.css";
 import "./character/character.css";
+import "./graphics/world.css";
 import { startGame } from "./ui/game";
 import { showSaveBlocked } from "./ui/save-notice";
 void startGame().catch(showSaveBlocked);
