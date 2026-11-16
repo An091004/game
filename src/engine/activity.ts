@@ -1,15 +1,14 @@
-/** Gộp trạng thái native + document để không tính ngoại tuyến hai lần. */
+/** Gộp visibility/pagehide để không tính ngoại tuyến hai lần. */
 export function createActivity(
   onPause: () => void,
   onResume: () => void,
   visible = true,
 ) {
   let documentVisible = visible,
-    nativeActive = true,
     pageVisible = true,
     active = visible;
   function update() {
-    const next = documentVisible && nativeActive && pageVisible;
+    const next = documentVisible && pageVisible;
     if (next === active) return;
     active = next;
     if (active) onResume();
@@ -21,10 +20,6 @@ export function createActivity(
     },
     document(value: boolean) {
       documentVisible = value;
-      update();
-    },
-    native(value: boolean) {
-      nativeActive = value;
       update();
     },
     page(value: boolean) {

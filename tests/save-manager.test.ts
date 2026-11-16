@@ -370,15 +370,13 @@ describe("Ngoại tuyến và vòng đời", () => {
     expect(applyElapsed(restored, 1010000, true).gain).toBe(0);
     expect(restored.qi).toBe(14.5);
   });
-  it("hidden + appStateChange + pagehide chỉ pause/resume một lần", () => {
+  it("hidden + pagehide/pageshow chỉ pause/resume một lần", () => {
     const pause = vi.fn(),
       resume = vi.fn(),
       a = createActivity(pause, resume);
     a.document(false);
-    a.native(false);
     a.page(false);
     expect(pause).toHaveBeenCalledTimes(1);
-    a.native(true);
     a.page(true);
     expect(resume).not.toHaveBeenCalled();
     a.document(true);

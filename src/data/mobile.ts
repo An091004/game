@@ -1,6 +1,5 @@
 export const MOBILE = {
   fontSizes: [0.9, 1, 1.1, 1.2],
-  exitWindowMs: 2000,
   moreTitle: "Một góc bên hiên",
   moreIntro: "Mở trang kinh, đọc chuyện cũ, hay chỉnh một chút cho vừa ý mình.",
   settingsTitle: "Cài đặt",
@@ -19,10 +18,6 @@ export const MOBILE = {
   battery: "Tiết kiệm pin",
   batteryHint: "Tắt hạt sáng và chuyển động trang trí. Tu luyện vẫn tiếp tục.",
   backup: "Sao lưu hành trình",
-  exitHint: "Bấm Back lần nữa để rời động phủ.",
-  exitFailed: "Chưa thể thoát lúc này. Hãy thử lại.",
-  nativeFailed: "Chưa kết nối được điều khiển Android. Hãy mở lại trò chơi.",
-  barsFailed: "Chưa đổi được màu biểu tượng hệ thống. Hãy mở lại trò chơi.",
 };
 export const BOTTOM_PAGES = ["practice", "character", "travel", "cave", "more"];
 export const MORE_PAGES = [

@@ -50,7 +50,6 @@ export function setupMobile() {
     `<h1 class="page-heading">${MOBILE.settingsTitle}</h1><p class="page-intro">${MOBILE.settingsIntro}</p><div class="card settings-card">${[
       ["theme", MOBILE.theme, MOBILE.themeHint],
       ["music", MOBILE.music, MOBILE.musicHint],
-      ["haptics", MOBILE.haptics, MOBILE.hapticsHint],
       ["batterySaver", MOBILE.battery, MOBILE.batteryHint],
     ]
       .map(
@@ -72,7 +71,7 @@ export function setupMobile() {
 }
 export function renderSettings(state: GameState) {
   const settings = state.settings;
-  for (const key of ["theme", "music", "haptics", "batterySaver"] as const) {
+  for (const key of ["theme", "music", "batterySaver"] as const) {
     (document.getElementById(`setting-${key}`) as HTMLInputElement).checked =
       key === "theme" ? settings.theme === "light" : settings[key];
   }

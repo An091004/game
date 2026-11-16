@@ -1,3 +1,20 @@
+# Kiểm chứng bản web / GitHub Pages
+
+Ngày 16/11/2026; Node 24.22.1, npm 12.2.1, Windows. Chuyển sang web theo yêu cầu, không build APK.
+
+| Lệnh | Kết quả |
+| --- | --- |
+| npm ci | Đạt; 41 packages/audit 42, 0 vulnerabilities |
+| npx tsc --noEmit | Đạt |
+| npx vitest run | Đạt 109/109, 5 file |
+| npm run build | Đạt, 53 modules; kiểm dist UTF-8/asset tương đối/font nhúng/.nojekyll/license |
+
+Số test giảm từ 141 do gỡ 15 test vá template APK, 2 test adapter native và 15 tình huống Back Android. Test game, nhân vật, migration, checksum, backup, khóa ghi và thời gian giữ lại. Adapter lưu web kiểm đọc lỗi/quota thay hai test Preferences. Giữ saveVersion và tên khóa để không reset tiến trình.
+
+Không có service worker, không tuyên bố mở lại khi mất mạng. Bản dist chỉ chứa file văn bản; font base64 vẫn kèm giấy phép OFL. GitHub Pages có bước deploy riêng, phải kiểm tra run và HTTP/commit marker thực tế; kết quả cục bộ không thay thế trạng thái online.
+
+Edge 157.0.4341.60: 11 nhóm kiểm tra trên URL con `/game/` đạt, bao gồm toàn bộ tính năng nhân vật, modal, save cũ/nhập xuất, 320–1280px/chữ 120%, hoạt ảnh, đột phá và font nhúng. Không lỗi JS hoặc request ngoài origin. Chạy lại 8 nhóm hồi quy save đạt (autosave/backup/hỏng hai ô/migration/8 giờ/resume trùng). actionlint workflow web đạt. ZIP chứa bản dist, server Node và hướng dẫn; không cần package npm để chạy ZIP.
+
 # Kiểm chứng giai đoạn 5
 
 Ngày 16/11/2026; Windows, Node 24.22.1, npm 12.2.1. Chỉ build web, APK vẫn tạm hoãn.

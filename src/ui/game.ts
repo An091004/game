@@ -2,9 +2,7 @@ import { setupCharacter } from "./character";
 import { CHARACTER_TEXT } from "../data/character";
 import { MOBILE } from "../data/mobile";
 import { setupMobile } from "./mobile";
-import { openDialog, closeDialog, closeTopDialog } from "./dialogs";
-import { createBackHandler } from "../engine/back";
-import { bindAndroidBack, exitAndroid, setSystemTheme } from "./native";
+import { openDialog, closeDialog } from "./dialogs";
 import { createMusic } from "./music";
 import { BALANCE } from "../data/balance";
 import { startAmbience } from "./ambience";
@@ -72,23 +70,6 @@ export async function startGame() {
   const ambience = startAmbience(
     () => foreground && !state.settings.batterySaver,
   );
-  const back = createBackHandler({
-    closeDialog: closeTopDialog,
-    page: () => activePage,
-    navigate: changePage,
-    hint: () => toast(MOBILE.exitHint),
-    flush: () => {
-      advanceRealtime();
-      return persist(false);
-    },
-    exit: exitAndroid,
-    failed: () => toast(MOBILE.exitFailed),
-  });
-  const updateSystemTheme = () => {
-    void setSystemTheme(state.settings.theme).catch(() =>
-      toast(MOBILE.barsFailed),
-    );
-  };
   const progression = createProgression(() => state);
   const {
     currentCost,
@@ -253,7 +234,7 @@ export async function startGame() {
       };
       $("stormHeading").textContent = TEXT.message021(stageName(next));
       $("stormDesc").textContent = TEXT.message022;
-      back.reset();
+
       openDialog($("stormOverlay"), () => {
         pendingGrand = null;
         endHold();
@@ -444,7 +425,7 @@ export async function startGame() {
       toast(TEXT.message049(stageName(n.unlock)));
       return;
     }
-    back.reset();
+
     activePage = id;
     document
       .querySelectorAll<HTMLElement>(".content-page")
@@ -486,7 +467,7 @@ export async function startGame() {
   function openBackup() {
     $("exportText").value = exportString();
     $("importText").value = "";
-    back.reset();
+
     openDialog($("backupOverlay"));
   }
   async function copyBackup() {
@@ -527,7 +508,7 @@ export async function startGame() {
       closeDialog($("backupOverlay"));
       music.stop();
       ambience.refresh();
-      updateSystemTheme();
+
       advanceRealtime(true);
       ensurePlots();
       awardAchievements();
@@ -637,7 +618,6 @@ export async function startGame() {
         travel();
         break;
       case "edit-character":
-        back.reset();
         character.openEditor();
         break;
       case "open-backup":
@@ -661,7 +641,7 @@ export async function startGame() {
       case "toggle-theme":
         state.settings.theme =
           state.settings.theme === "dark" ? "light" : "dark";
-        updateSystemTheme();
+
         renderAll();
         persist();
         break;
@@ -691,7 +671,6 @@ export async function startGame() {
     const key = e.target.dataset.setting;
     if (key === "theme") {
       state.settings.theme = e.target.checked ? "light" : "dark";
-      updateSystemTheme();
     } else if (key === "music" || key === "haptics" || key === "batterySaver") {
       state.settings[key] = e.target.checked;
       if (key === "music") {
@@ -717,7 +696,7 @@ export async function startGame() {
   const pause = () => {
     foreground = false;
     document.documentElement.dataset.foreground = "false";
-    back.reset();
+
     ambience.refresh();
     advanceRealtime();
     manager.markDirty(state);
@@ -728,7 +707,7 @@ export async function startGame() {
   const resume = () => {
     foreground = true;
     document.documentElement.dataset.foreground = "true";
-    back.reset();
+
     ambience.refresh();
     advanceRealtime(true);
     awardAchievements();
@@ -752,10 +731,7 @@ export async function startGame() {
     manager.markDirty(state);
     renderAll();
   }, 1000);
-  updateSystemTheme();
-  await bindAndroidBack(() => back.press()).catch(() =>
-    toast(MOBILE.nativeFailed),
-  );
+
   renderAll();
   if (!state.character) character.openEditor(true);
 }
