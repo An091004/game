@@ -1,5 +1,11 @@
 # Tiến độ Nhàn Vân
 
+## Mốc mới: Sơn Hải Dị Văn (16/11/2026)
+
+- Theo yêu cầu thêm sáng tạo, màu sắc và đồ họa bằng code: ba cảnh SVG, nhân vật đứng theo profile, bốn NPC với chân dung và lời thoại. Hướng dẫn/phạm vi ở [VISUAL-WORLD.md](VISUAL-WORLD.md).
+- Nhánh riêng `codex/visual-world`, nối bản web `046a4bb`; không merge main. Không sửa save schema/cân bằng, không biến đoạn thoại minh họa thành lời hứa về AI/NPC có trí nhớ.
+- Đây là mốc duyệt mỹ thuật. GDD đầy đủ, kiến trúc thế giới và gameplay sinh tồn–luân hồi vẫn chờ phản hồi trước khi tiếp tục. Kết quả kiểm chứng và phát hành thực tế ghi trong PR.
+
 ## Hướng hiện tại: web / GitHub Pages (16/11/2026)
 
 Người dùng yêu cầu build thành web, không cần APK nữa và chọn GitHub Pages của repo An091004/game để có link chơi online. Hướng dẫn hiện hành: [WEB.md](WEB.md). Các mục Android/giai đoạn 6–8 phía dưới là kế hoạch cũ, không tự tiếp tục.

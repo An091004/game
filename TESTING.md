@@ -1,3 +1,15 @@
+# Kiểm chứng Sơn Hải Dị Văn
+
+Ngày 16/11/2026; Windows, Node 24.22.1, npm 12.2.1, Edge 157.0.4341.60.
+
+- `npm ci`: đạt, 41 packages/audit 42, 0 vulnerabilities.
+- `npx tsc --noEmit`: đạt; `npx vitest run`: giữ 109/109 test; `npm run build`: đạt, 59 modules, font nhúng, dist chỉ văn bản.
+- Kiểm bản production dưới `/game/`: nhân vật mới vào Sơn Hải qua lời mời; 3 cảnh/4 NPC/toàn bộ chủ đề hoạt động; không đổi tài nguyên hoặc schema save; không trùng SVG ID hay thiếu tham chiếu gradient.
+- Tick giữ SVG; sửa ngoại hình cập nhật cảnh; tên có HTML hiển thị bằng chữ; reload `#world` giữ profile. Enter/Space/Tab hoạt động. Chạm tên NPC trong tranh đưa hội thoại vào tầm nhìn.
+- Nút dừng, trang ẩn, xuống nền, tiết kiệm pin và reduced-motion dừng chuyển động đúng. Mọi cảnh ở 320/390/850/1280px, theme sáng và chữ 120% không tràn ngang; nút chạm ít nhất 44px.
+- Không lỗi JS/request hoặc tài nguyên ngoài origin; font Việt tải được. Đã xem ảnh của ba cảnh desktop và bản mobile để kiểm bố cục/màu sắc.
+- Đây là kiểm chứng web trong trình duyệt, chưa đo trên điện thoại vật lý. NPC hiện chỉ có đối thoại minh họa, chưa có lịch trình, trí nhớ hay hậu quả; không coi đây là nghiệm thu gameplay redesign.
+
 # Kiểm chứng bản web / GitHub Pages
 
 Ngày 16/11/2026; Node 24.22.1, npm 12.2.1, Windows. Chuyển sang web theo yêu cầu, không build APK.

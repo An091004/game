@@ -21,6 +21,7 @@ export const MOBILE = {
 };
 export const BOTTOM_PAGES = ["practice", "character", "travel", "cave", "more"];
 export const MORE_PAGES = [
+  "world",
   "manuals",
   "alchemy",
   "journal",
