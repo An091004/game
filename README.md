@@ -55,4 +55,4 @@ Repo chỉ commit file văn bản; font được nhúng dạng data URL. dist/re
 - `legacy/index.html`: bản HTML đầu tiên, giữ làm fixture hồi quy.
 - `scripts/`: kiểm tra văn bản, kiểm tra bản web, server cục bộ và đóng gói ZIP.
 
-Xem [TESTING.md](TESTING.md) và [tiến độ](docs/PROGRESS.md). Kế hoạch/hướng dẫn Android cũ được giữ để tra lịch sử, không còn áp dụng. Chưa gán giấy phép mã nguồn mở; giấy phép OFL của font nằm trong public/licenses và bản build.
+Xem [TESTING.md](TESTING.md) và [tiến độ](docs/PROGRESS.md). [GDD Nghịch Mệnh](docs/GDD.md) là đề xuất redesign đang chờ duyệt, chưa phải các cơ chế đã có trong bản chơi. Kế hoạch/hướng dẫn Android cũ được giữ để tra lịch sử, không còn áp dụng. Chưa gán giấy phép mã nguồn mở; giấy phép OFL của font nằm trong public/licenses và bản build.

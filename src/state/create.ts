@@ -2,13 +2,14 @@ import { BALANCE } from "../data/balance";
 import type { GameState } from "./types";
 import { plotCapacity } from "../engine/math";
 export function newState(): GameState {
+  const now = Date.now();
   return {
     version: 1,
     saveVersion: 2,
-    lastSeenAt: Date.now(),
-    createdAt: Date.now(),
+    lastSeenAt: now,
+    createdAt: now,
     character: null,
-    lastSeen: Date.now(),
+    lastSeen: now,
     stage: 0,
     qi: 0,
     stones: BALANCE.startingStones,
