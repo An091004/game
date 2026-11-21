@@ -1,5 +1,12 @@
 # Tiến độ Nhàn Vân
 
+## Redesign Phase 1: GDD (21/11/2026)
+
+- Sau mốc đồ họa, người dùng yêu cầu tiếp tục. Hoàn thành đề xuất thiết kế tại [GDD.md](GDD.md): tầm nhìn Nghịch Mệnh, 10 trụ cột, bảng cảnh giới, economy, nhân quả, offline, sinh tử–di sản và phiên mở đầu 10 phút.
+- Nhánh `codex/phase1-gdd` nối `codex/visual-world` tại `80c9b00`. Chưa triển khai gameplay, chưa đổi schema/cân bằng hoặc bản Pages; không merge main.
+- Khi kiểm chứng phát hiện lỗi cũ: newState đọc Date.now ba lần nên mốc save có thể lệch 1 ms và không giữ nguyên khi xuất/nhập. Đã tái hiện bằng test đồng hồ tăng từng ms, sửa dùng cùng một thời điểm khởi tạo; không đổi dữ liệu save cũ. Kết quả kiểm chứng cuối ghi trong PR.
+- Số liệu là giả thuyết thử nghiệm, chưa được playtest. Đã phân biệt tính năng đồ họa đang có với cơ chế dự kiến. Phase 2 kiến trúc và các mốc code sau đó chờ duyệt GDD theo quy trình người dùng yêu cầu.
+
 ## Mốc mới: Sơn Hải Dị Văn (16/11/2026)
 
 - Theo yêu cầu thêm sáng tạo, màu sắc và đồ họa bằng code: ba cảnh SVG, nhân vật đứng theo profile, bốn NPC với chân dung và lời thoại. Hướng dẫn/phạm vi ở [VISUAL-WORLD.md](VISUAL-WORLD.md).

@@ -1,3 +1,13 @@
+# Kiểm chứng Phase 1 GDD và mốc thời gian khởi tạo
+
+Ngày 21/11/2026. Tài liệu GDD là đề xuất, chưa được chơi thử hoặc đo cân bằng; kiểm dưới đây áp dụng cho mã nền hiện tại và sửa lỗi mốc thời gian, không xác nhận các cơ chế redesign đã hoạt động.
+
+- npm ci đạt, 41 packages/audit 42, 0 vulnerabilities. TypeScript và build web đạt.
+- Lần chạy đầu gặp lỗi xuất/nhập vì lastSeenAt và lastSeen đọc đồng hồ ở hai mili giây khác nhau. Test hồi quy cho Date.now tăng từng mili giây tái hiện chắc chắn lỗi trước khi sửa.
+- newState nay dùng một thời điểm cho createdAt/lastSeenAt/lastSeen; không đổi schema/migration. Vitest cuối: **110/110** trong 5 file đạt, gồm test hồi quy mới; build 59 modules, dist văn bản đạt.
+- Rà GDD đủ 10 trụ cột, bảng cảnh giới, phân loại sự kiện, kinh tế, sinh tử/di sản, ngoại tuyến và phiên 10 phút; sửa mâu thuẫn lịch, nguồn ký ức và hạn mức di sản. Công thức lời kỳ vọng 10,1 và 7,9 là ví dụ thiết kế, không phải số liệu telemetry.
+- Không triển khai GDD lên Pages hoặc phát hành gameplay mới ở Phase 1. Bản chơi online vẫn là mốc Sơn Hải trước đó.
+
 # Kiểm chứng Sơn Hải Dị Văn
 
 Ngày 16/11/2026; Windows, Node 24.22.1, npm 12.2.1, Edge 157.0.4341.60.
