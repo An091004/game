@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { CHARACTER } from "../src/data/character";
 import { CONFIG, STAGES } from "../src/data/config";
 import { parseCharacter } from "../src/state/character";
@@ -11,6 +11,18 @@ import { characterView } from "../src/character/model";
 import { renderCharacter } from "../src/character/render";
 
 describe("Ngoại hình và save tương thích", () => {
+  it("khởi tạo qua ranh giới mili giây vẫn giữ mốc save và dữ liệu xuất nhập", () => {
+    let clock = 1_795_000_000_000;
+    const now = vi.spyOn(Date, "now").mockImplementation(() => clock++);
+    try {
+      const state = newState();
+      expect(state.createdAt).toBe(state.lastSeenAt);
+      expect(state.lastSeen).toBe(state.lastSeenAt);
+      expect(deserialize(serialize(state))).toEqual(state);
+    } finally {
+      now.mockRestore();
+    }
+  });
   it.each([1, 2])(
     "save v%s chưa có nhân vật vẫn giữ toàn bộ tiến trình",
     (version) => {
